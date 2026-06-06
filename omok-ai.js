@@ -19,6 +19,15 @@ const TH_OPEN4 = 30000, TH_CLOSE4 = 12000, TH_OPEN3 = 5000, TH_DBL3 = 50000, TH_
 let board = null;
 let renjuMode = false;
 
+// 난이도 프리셋 + blunder [SYNC with script.js]
+const AI_LEVELS = {
+  beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.20 },
+  friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.10 },
+  seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.05 },
+  master:   { thinkMin: 450, thinkMax: 900, blunder: 0    },
+};
+let aiLevel = 'master';
+
 function newBoard() {
   board = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
 }
@@ -250,6 +259,11 @@ function aiPickDepth(side) {
   if (!cands.length) return null;
   for (const [r, c] of cands) if (isWinningMove(r, c, side)) return [r, c];
   for (const [r, c] of cands) if (isWinningMove(r, c, opp)) return [r, c];
+  // blunder 판정 [SYNC with script.js] — 즉승/즉패차단 후, 최선탐색 전.
+  const lvl = AI_LEVELS[aiLevel] || AI_LEVELS.master;
+  if (lvl.blunder > 0 && Math.random() < lvl.blunder) {
+    return cands[Math.floor(Math.random() * cands.length)];
+  }
   const ordered = orderedCands(side, SEARCH_WIDTH);
   if (!ordered.length) return aiPick(side);
   const next = (side === BLACK) ? WHITE : BLACK;
@@ -269,11 +283,12 @@ function aiPickDepth(side) {
 // ── 상태 접근자 + export ───────────────────────────────────
 function _setBoard(b){ board=b; } function _getBoard(){ return board; }
 function _setRenju(v){ renjuMode=v; }
+function _setLevel(id){ aiLevel = id; } function _getLevel(){ return aiLevel; }
 module.exports = {
   SIZE, WIN, BLACK, WHITE, DIRS, AI_RADIUS, SEARCH_DEPTH, SEARCH_WIDTH, WIN_SCORE,
-  COL_LABELS, newBoard, inB, parse, name, put,
+  AI_LEVELS, COL_LABELS, newBoard, inB, parse, name, put,
   scoreLine, lineInfo, makesOpenFour, isOpenThree, isForbiddenMove,
   evalMove, genCandidates, checkWin, isWinningMove,
   aiPick, evalBoard, threatBonus, fiveOnBoard, orderedCands, alphabeta, aiPickDepth,
-  _setBoard, _getBoard, _setRenju,
+  _setBoard, _getBoard, _setRenju, _setLevel, _getLevel,
 };

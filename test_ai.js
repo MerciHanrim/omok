@@ -17,8 +17,8 @@
 'use strict';
 const E = require('./omok-ai.js');
 const {
-  newBoard, put, name, parse, _getBoard, _setRenju,
-  BLACK, WHITE,
+  newBoard, put, name, parse, _getBoard, _setRenju, _setLevel, _getLevel,
+  BLACK, WHITE, AI_LEVELS,
   evalBoard, threatBonus, aiPick, aiPickDepth, isForbiddenMove,
 } = E;
 
@@ -147,6 +147,7 @@ function group_regression() {
    측정: 깊이 2는 K6(패배수), 깊이 3부터 I9(대각 차단). → SEARCH_DEPTH=4 근거. */
 function group_realgame_regression() {
   console.log('\n[그룹 4] 실기 회귀 — 대각 이중위협 방어 (depth 검증선)');
+  _setLevel('master');  // 회귀는 명인 기준(blunder 0)으로 결정론 보장
   const blacks11 = ['H8','G9','F7','F8','E7','F6','G7','I6','D11','H6','L7'];
   const whites11 = ['H9','G8','I7','I8','H10','F9','H7','E10','J7','K7','G6'];
   setBoard(blacks11, whites11);
@@ -156,6 +157,66 @@ function group_realgame_regression() {
   ok(got === 'I9', `4-2 master 12수: 대각 이중위협 차단 I9 선택 → ${got}`);
 }
 
+/* ── 그룹 5: 5단계 blunder 난이도 — 약하되 고장나지 않았는가 ──────
+   blunder는 '최선 수읽기 포기'일 뿐 즉승/즉패차단은 항상 유지(한림 확정). */
+function group_blunder() {
+  console.log('\n[그룹 5] 5단계 blunder — 약하되 고장나지 않았는가');
+  const saved = _getLevel();
+
+  _setLevel('master');
+  setBoard(['F8', 'G8', 'H6', 'H7'], ['B2']);
+  const ref = aiPickDepth(WHITE);
+  let deterministic = true;
+  for (let i = 0; i < 30; i++) {
+    setBoard(['F8', 'G8', 'H6', 'H7'], ['B2']);
+    const m = aiPickDepth(WHITE);
+    if (!m || !ref || m[0] !== ref[0] || m[1] !== ref[1]) { deterministic = false; break; }
+  }
+  ok(deterministic, `5-1 명인(blunder 0) 결정론적 — 항상 ${ref ? name(ref[0], ref[1]) : '-'}`);
+
+  _setLevel('beginner');
+  let allWin = true;
+  for (let i = 0; i < 200; i++) {
+    setBoard([], ['H7', 'H8', 'H9', 'H10']);
+    const m = aiPickDepth(WHITE);
+    const n = m ? name(m[0], m[1]) : '-';
+    if (n !== 'H6' && n !== 'H11') { allWin = false; break; }
+  }
+  ok(allWin, `5-2 초심자도 즉승 100% (blunder=${AI_LEVELS.beginner.blunder})`);
+
+  let allBlock = true;
+  for (let i = 0; i < 200; i++) {
+    setBoard(['D4', 'D5', 'D6', 'D7'], ['K10']);
+    const m = aiPickDepth(WHITE);
+    const n = m ? name(m[0], m[1]) : '-';
+    if (n !== 'D3' && n !== 'D8') { allBlock = false; break; }
+  }
+  ok(allBlock, `5-3 초심자도 즉패 차단 100%`);
+
+  const L = AI_LEVELS;
+  ok(L.beginner.blunder > L.friend.blunder &&
+     L.friend.blunder > L.seasoned.blunder &&
+     L.seasoned.blunder > L.master.blunder &&
+     L.master.blunder === 0,
+     `5-4 blunder 위계 초심자(${L.beginner.blunder})>중수(${L.friend.blunder})>고수(${L.seasoned.blunder})>명인(${L.master.blunder})`);
+
+  _setLevel('master');
+  setBoard(['H8', 'I8'], ['H9']);
+  const masterMove = aiPickDepth(WHITE);
+  const mName = masterMove ? name(masterMove[0], masterMove[1]) : '-';
+  _setLevel('beginner');
+  let differed = false;
+  for (let i = 0; i < 200; i++) {
+    setBoard(['H8', 'I8'], ['H9']);
+    const m = aiPickDepth(WHITE);
+    const n = m ? name(m[0], m[1]) : '-';
+    if (n !== mName) { differed = true; break; }
+  }
+  ok(differed, `5-5 초심자 blunder 실제 발동(명인 최선=${mName}와 다른 수 관찰)`);
+
+  _setLevel(saved);
+}
+
 console.log('======================================================');
 console.log(' 오목 AI 단위테스트 — (b) 미니맥스 + 이중위협 평가');
 console.log('======================================================');
@@ -163,6 +224,7 @@ group_eval();
 group_minimax();
 group_regression();
 group_realgame_regression();
+group_blunder();
 console.log('\n------------------------------------------------------');
 console.log(` 결과: ${pass} PASS / ${fail} FAIL  (총 ${pass + fail})`);
 console.log('------------------------------------------------------');

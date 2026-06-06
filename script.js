@@ -419,13 +419,18 @@
        미리 박아둔다. chooseLevel(id)에서 `aiLevel = id` 한 줄만 더하면
        난이도별로 호흡이 달라진다(초심자=짧게 … 명인=가장 차분하게).
        단위는 ms. measure not guess — 체감 보고 숫자만 조정. */
+  // 난이도별 프리셋: think 호흡(ms) + blunder 확률.
+  // ★ blunder = '최선 수읽기를 포기하고 무작위 후보를 두는' 확률(5단계).
+  //   단 즉승/즉패차단은 blunder와 무관하게 항상 유지(aiPickDepth ①②).
+  //   blunder ≠ 즉승/즉패도 모르는 바보. 값은 장기 난이도 인격 계승.
+  //   호흡은 약할수록 짧게(망설임 적게), 명인이 가장 차분.
   const AI_LEVELS = {
-    beginner: { thinkMin: 250, thinkMax: 550 },  // 🌱 짧게 — 망설임 적게
-    friend:   { thinkMin: 350, thinkMax: 700 },  // 🍃 보통
-    seasoned: { thinkMin: 400, thinkMax: 800 },  // 🎋 조금 길게
-    master:   { thinkMin: 450, thinkMax: 900 },  // 🏮 가장 차분하게
+    beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.20 },  // 🌱 자주 실수
+    friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.10 },  // 🍃 가끔 실수
+    seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.05 },  // 🎋 드물게 실수
+    master:   { thinkMin: 450, thinkMax: 900, blunder: 0    },  // 🏮 빈틈 없음
   };
-  let aiLevel = 'master';  // 현재 단일 강도. (5단계 chooseLevel에서 세팅)
+  let aiLevel = 'master';  // chooseLevel(id)에서 세팅. 기본 명인.
   let useMenu = true;      // 메뉴로 진입하는가 (URL 파라미터 있으면 false)
   (function readAiParam() {
     const params = new URLSearchParams(location.search);
@@ -1005,6 +1010,16 @@
       if (isWinningMove(r, c, opp)) return [r, c];
     }
 
+    // ★ blunder 판정 (5단계 난이도) — 최선 수읽기를 포기하고 무작위 착수.
+    //   ①②(즉승/즉패차단)는 위에서 이미 처리됐으니 여기 도달 = 코앞 승부는 없음.
+    //   cands는 genCandidates 범위 + (흑 renju면) 금수 제외 상태라,
+    //   무작위라도 판 근처의 합법수만 고른다(구석 착수·금수 방지).
+    //   명인(blunder 0)이면 이 분기는 절대 안 탄다.
+    const lvl = AI_LEVELS[aiLevel] || AI_LEVELS.master;
+    if (lvl.blunder > 0 && Math.random() < lvl.blunder) {
+      return cands[Math.floor(Math.random() * cands.length)];
+    }
+
     // ③ 깊이 탐색. 이동순서 상위 후보만 루트에서 평가.
     const ordered = orderedCands(side, SEARCH_WIDTH);
     if (!ordered.length) return aiPick(side);   // 안전 폴백
@@ -1311,12 +1326,13 @@
     levelNote.textContent = t('levelPickMsg');
     renderLevelGrid();
   }
-  // 난이도 4종. ★ 현재 'master'만 active. 나머지는 회색(5단계 연결).
+  // 난이도 4종. ★ 5단계 완료: blunder 연결되어 4단계 모두 active.
+  //   강도 손잡이는 AI_LEVELS[id].blunder (명인 0 → 초심자 0.20).
   const LEVEL_LIST = [
-    { id: 'beginner', emoji: '🌱', nameKey: 'lvBeginnerName', subKey: 'lvBeginnerSub', active: false },
-    { id: 'friend',   emoji: '🍃', nameKey: 'lvFriendName',   subKey: 'lvFriendSub',   active: false },
-    { id: 'seasoned', emoji: '🎋', nameKey: 'lvSeasonedName', subKey: 'lvSeasonedSub', active: false },
-    { id: 'master',   emoji: '🏮', nameKey: 'lvMasterName',   subKey: 'lvMasterSub',   active: true  },
+    { id: 'beginner', emoji: '🌱', nameKey: 'lvBeginnerName', subKey: 'lvBeginnerSub', active: true },
+    { id: 'friend',   emoji: '🍃', nameKey: 'lvFriendName',   subKey: 'lvFriendSub',   active: true },
+    { id: 'seasoned', emoji: '🎋', nameKey: 'lvSeasonedName', subKey: 'lvSeasonedSub', active: true },
+    { id: 'master',   emoji: '🏮', nameKey: 'lvMasterName',   subKey: 'lvMasterSub',   active: true },
   ];
   let levelPicking = false;
   function renderLevelGrid() {
