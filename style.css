@@ -1,0 +1,406 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&family=Gowun+Batang:wght@400;700&display=swap');
+
+/* ── 색 변수: 장기에서 그대로 계승 (같은 세계관) ── */
+:root {
+  --ink: #2b2724;
+  --ink-soft: #4a443d;
+  --ink-read: #3a352f;
+  --paper: #e8ddc7;
+  --paper-deep: #ddcfb2;
+  --line: #6b5d48;
+  --red: #9e2b25;
+  --red-deep: #7a1f1a;
+  --blue: #1f4e5f;
+  --blue-deep: #15323d;
+  --gold: #b08d57;
+  --glow: rgba(176,141,87,0.55);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: #d8c9ab;
+  font-family: 'Gowun Batang', serif;
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.game-area {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+}
+.board-col { flex: 2.7 1 0; min-width: 0; position: relative; }
+.side-panel {
+  flex: 1 1 0;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media (max-width: 720px) {
+  .game-area { flex-direction: column; align-items: stretch; }
+  .board-col, .side-panel { flex: 1 1 auto; }
+  /* 좁은 화면: 상태 → 버튼 → 기보 순 */
+  .side-panel { display: flex; flex-direction: column; }
+  .status       { order: 1; }
+  .controls     { order: 2; }
+  .movelog-wrap { order: 3; }
+  .movelog { max-height: 180px; }
+}
+
+/* ── 타이틀바 (장기 그대로) ── */
+.title-bar { text-align: center; position: relative; }
+.title-bar h1 {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 0.3em;
+  color: var(--ink);
+  text-indent: 0.3em;
+}
+.title-bar .sub {
+  font-size: 0.72rem;
+  letter-spacing: 0.4em;
+  color: var(--ink-soft);
+  margin-top: 2px;
+  text-indent: 0.4em;
+}
+
+/* ── 차례 표시 (장기 status 구조 재사용 — 흑/백으로 색 매핑) ── */
+.status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px 18px 15px;
+  background: rgba(43,39,36,0.04);
+  border: 1px solid rgba(107,93,72,0.3);
+  border-top: 3px solid var(--ink-soft);
+  border-radius: 2px;
+  min-height: 64px;
+}
+/* 흑 차례 = 먹빛(짙은 먹) / 백 차례 = 백자(금빛 테두리로 구분) */
+.status.turn-black { border-top-color: var(--ink); }
+.status.turn-white { border-top-color: var(--gold); }
+.status .turn-line {
+  white-space: nowrap;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.status .turn-dot {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  margin-right: 9px;
+  vertical-align: 0px;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.08);
+}
+.turn-black .turn-dot { background: #2f3640; }       /* 먹빛 */
+.turn-white .turn-dot { background: #f3ead9; box-shadow: 0 0 0 1px var(--line); } /* 백자 */
+.status .msg { color: var(--ink-read); font-size: 0.9rem; }
+/* 33 금수 클릭 시 잠깐 강조 (0.9초 후 해제) */
+.status.warn { border-top-color: var(--red); }
+.status.warn .msg { color: var(--red-deep); font-weight: 600; }
+
+/* ── 보드: 15×15 정사각, 교차점 좌표계 (장기 sizeBoard 패턴 차용, flip 없음) ── */
+.board-frame {
+  position: relative;
+  width: 100%;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: #d8c9ab;
+  border: 1px solid #5a4a32;
+  border-radius: 4px;
+  box-shadow:
+    0 14px 36px rgba(43,39,36,0.33),
+    0 0 0 7px #cdb88f,
+    0 0 0 8px #5a4a32;
+  touch-action: manipulation;
+}
+/* 배경 그림 레이어 — 오목은 대칭이라 flip 불필요, 한 장 고정 */
+.board-frame::before {
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  border-radius: 3px;
+  background:
+    linear-gradient(rgba(248,240,224,0.06), rgba(248,240,224,0.06)),
+    url('assets/board/board-bg.png');
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+/* 테마 전환 — board-frame 클래스 (장기와 동일 방식) */
+.board-frame.bg-wood::before {
+  background:
+    linear-gradient(rgba(248,240,224,0.04), rgba(248,240,224,0.04)),
+    url('assets/board/board-bg-wood.png');
+  background-size: cover; background-position: center;
+}
+.board-frame.bg-sipjangsaeng::before {
+  background:
+    linear-gradient(rgba(248,240,224,0.05), rgba(248,240,224,0.05)),
+    url('assets/board/board-bg-sipjangsaeng.png');
+  background-size: cover; background-position: center;
+}
+.board-frame.bg-paper::before {
+  background: url('assets/board/board-bg-paper.png');
+  background-size: cover; background-position: center;
+}
+
+/* SVG 격자 — 장기보다 선이 진해야 함(바둑판은 선이 또렷). z-index로 배경 위 */
+svg.grid { position: absolute; overflow: visible; z-index: 1; }
+.grid line { stroke: rgba(60,45,28,0.45); stroke-width: 1; stroke-linecap: round; }
+/* 외곽 테두리선은 살짝 더 진하게 */
+.grid line.edge { stroke: rgba(60,45,28,0.7); stroke-width: 1.4; }
+/* 화점(천원·별점) — 오목판의 까만 점 */
+.grid .star { fill: rgba(43,39,36,0.6); }
+/* 좌표축 라벨 — 작고 은은한 먹빛 + 밝은 후광(halo).
+   산수화처럼 명암 큰 배경에서도 읽히도록 글자 뒤에 옅은 외곽선. */
+.grid .axis-label {
+  fill: rgba(50,38,22,0.78);
+  font-family: 'Gowun Batang', serif;
+  font-size: 3px;
+  letter-spacing: 0;
+  user-select: none;
+  /* halo: 밝은 stroke를 글자 뒤로(paint-order) 깔아 어두운/밝은 배경 모두 대응 */
+  stroke: rgba(245,238,224,0.85);
+  stroke-width: 0.7px;
+  paint-order: stroke fill;
+  stroke-linejoin: round;
+}
+
+/* 돌 레이어 + 히트영역 레이어 (둘 다 같은 inset, JS가 픽셀로 맞춤) */
+.stones { position: absolute; z-index: 2; }
+.hit-layer { position: absolute; z-index: 3; }
+
+/* 마지막 둔 돌 표시 — 돌보다 살짝 큰 금빛 링. "여기 보세요!"가 아니라
+   "마지막 수"의 차분한 톤. 돌(5.6%)을 살짝 감싸는 정도. (한림 판단 2026-06-06) */
+.last-mark {
+  position: absolute;
+  width: 7.5%; aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px rgba(176,141,87,0.7);
+  pointer-events: none;
+  z-index: 3;   /* 돌(2) 위에 얹혀 가장자리를 감싸도록 */
+}
+
+/* ── 돌: 루미 제작 백자/먹빛 조약돌 PNG (§3.5). 본체만 투명 추출.
+   PNG에 입체 음영·유약 광택이 이미 있어 CSS inset 그림자는 안 줌.
+   보드 위 접지감만 drop-shadow로 살짝. ── */
+.stone {
+  position: absolute;
+  width: 5.6%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+  z-index: 2;
+  /* 접지 그림자 — 돌이 판 위에 놓인 느낌 (PNG 자체엔 그림자 없음) */
+  filter: drop-shadow(0 1.5px 2px rgba(43,39,36,0.45));
+}
+.stone.black { background-image: url('assets/stones/omok_black.png'); }
+.stone.white { background-image: url('assets/stones/omok_white.png'); }
+
+/* 히트영역 — 빈 교차점 클릭 받는 투명 원. 호버 시 다음 돌 미리보기(은은) */
+.hit {
+  position: absolute;
+  width: 6.4%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 3;
+}
+.hit:hover::after {
+  content: '';
+  position: absolute; inset: 12%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.45;
+}
+.hit.next-black:hover::after { background-image: url('assets/stones/omok_black.png'); }
+.hit.next-white:hover::after { background-image: url('assets/stones/omok_white.png'); }
+
+/* ── 종료 화면 (장기 win-overlay 재사용) ── */
+.win-overlay {
+  position: absolute; inset: 0;
+  z-index: 5;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  /* 산수화가 더 보이도록 투명도·블러 낮춤 (루미 피드백 2026-06-06) */
+  background: rgba(43,39,36,0.5);
+  backdrop-filter: blur(1.5px);
+  border-radius: 3px;
+  text-align: center;
+  padding: 24px;
+}
+.win-overlay.show { display: flex; animation: fadein 0.3s; }
+/* 제목("흑 승리")이 먼저, 부제("먹빛 조약돌이 다섯 줄을…")가 아래 — 자연 연결 */
+.win-overlay h2 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 2rem; font-weight: 900;
+  color: #f3ead9;
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
+.win-overlay .win-sub {
+  font-size: 0.98rem;
+  color: var(--paper);
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+}
+.win-overlay #winHint { font-size: 0.84rem; color: rgba(243,234,217,0.78); margin-top: 8px; }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── 기보 (장기 movelog 톤 차용 — 오목은 좌표 하나라 단순) ── */
+.movelog-wrap {
+  display: flex;
+  flex-direction: column;
+  background: rgba(43,39,36,0.04);
+  border: 1px solid rgba(107,93,72,0.3);
+  border-radius: 2px;
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-height: 120px;
+}
+.movelog-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+  font-weight: 700;
+  padding: 9px 12px 7px;
+  border-bottom: 1px solid rgba(107,93,72,0.2);
+  text-align: center;
+}
+.movelog {
+  list-style: none;
+  margin: 0; padding: 4px 0;
+  overflow-y: auto;
+  max-height: 280px;
+  font-variant-numeric: tabular-nums;
+}
+.movelog .empty {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  text-align: center;
+  padding: 16px 12px;
+  opacity: 0.7;
+}
+.movelog li {
+  display: flex;
+  align-items: center;
+  padding: 3px 12px;
+  font-size: 0.86rem;
+  color: var(--ink-read);
+}
+.movelog li:nth-child(even) { background: rgba(43,39,36,0.03); }
+.movelog .mv-no {
+  flex: 0 0 28px;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+.movelog .mv-cell {
+  flex: 1 1 0;
+  letter-spacing: 0.04em;
+}
+/* 흑 좌표 = 먹빛 / 백 좌표 = 약간 옅게(백자 톤) */
+.movelog .mv-black { color: var(--ink); font-weight: 600; }
+.movelog .mv-white { color: var(--ink-soft); }
+
+/* ── 컨트롤 버튼 (장기 톤 차용) ── */
+.controls { display: flex; gap: 8px; }
+.controls button {
+  flex: 1;
+  font-family: 'Gowun Batang', serif;
+  font-size: 0.9rem;
+  padding: 11px 8px;
+  background: rgba(43,39,36,0.05);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.15s;
+}
+.controls button:hover { background: rgba(176,141,87,0.18); }
+
+/* ── 설정 드롭다운 (장기 그대로) ── */
+.settings-btn {
+  position: absolute;
+  right: 0; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  font-size: 1.3rem; cursor: pointer;
+  color: var(--ink-soft);
+  padding: 4px 8px; border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+.settings-btn:hover { background: rgba(176,141,87,0.18); color: var(--ink); }
+.settings-dropdown {
+  display: none;
+  position: absolute;
+  right: 0; top: calc(50% + 22px);
+  z-index: 300;
+  min-width: 180px;
+  background: linear-gradient(160deg, var(--paper), var(--paper-deep));
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(43,39,36,0.35);
+  padding: 8px 0;
+  text-align: left;
+}
+.settings-dropdown.open { display: block; animation: fadein 0.15s; }
+.settings-section-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  padding: 6px 16px 4px;
+  font-weight: 700;
+}
+.lang-btn {
+  display: block; width: 100%;
+  font-family: 'Gowun Batang', serif;
+  font-size: 0.84rem;
+  padding: 8px 16px;
+  background: transparent; border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+.lang-btn:hover { background: rgba(176,141,87,0.15); color: var(--ink); }
+.lang-btn.active { color: var(--ink); font-weight: 700; background: rgba(176,141,87,0.12); }
+.lang-btn.active::before { content: '✓ '; color: var(--gold); }
+.settings-backdrop { display: none; position: fixed; inset: 0; z-index: 299; }
+.settings-backdrop.open { display: block; }
+/* 설정 드롭다운 구분선 (언어 ↔ 배경 구분) — 장기 CSS 차용 */
+.settings-divider {
+  height: 1px;
+  background: rgba(107,93,72,0.2);
+  margin: 6px 0;
+}

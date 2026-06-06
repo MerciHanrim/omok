@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 에디터 / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# 로그 · 임시
+*.log
+*.tmp
+.cache/
+
+# 로컬 서버 부산물
+__pycache__/
+
+# 리소스 작업 폴더 (기물 이미지 원본·작업본 등 로컬 전용)
+omok_resource/
+
+# 설계·인수인계 문서 (로컬 전용 — 공개 저장소에 올리지 않음)
+docs/
+
+# AI 작업 예정 (Fairy-Stockfish WASM은 용량이 커서 별도 관리 고려)
+# *.wasm
+# *.nnue

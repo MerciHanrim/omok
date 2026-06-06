@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omok · Korean Five-in-a-Row</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <!-- 타이틀바: 장기와 동일 골격 (제목 + 부제 + ⚙) -->
+  <div class="title-bar">
+    <h1>五目</h1>
+    <div class="sub" id="subLabel">OMOK · 오목</div>
+    <button class="settings-btn" id="settingsBtn" aria-label="설정">⚙</button>
+    <div class="settings-backdrop" id="settingsBackdrop"></div>
+    <div class="settings-dropdown" id="settingsDropdown">
+      <!-- 언어 (장기와 동일 7개) -->
+      <div class="settings-section-label" id="settingsLangLabel">언어</div>
+      <button id="langKo" class="lang-btn">한국어</button>
+      <button id="langEn" class="lang-btn">English</button>
+      <button id="langZhHans" class="lang-btn">简体中文</button>
+      <button id="langZhHant" class="lang-btn">繁體中文</button>
+      <button id="langJa" class="lang-btn">日本語</button>
+      <button id="langDe" class="lang-btn">Deutsch</button>
+      <button id="langFr" class="lang-btn">Français</button>
+      <div class="settings-divider"></div>
+      <!-- 배경 테마 -->
+      <div class="settings-section-label" id="settingsBgLabel">바둑판 배경</div>
+      <button id="bgSansuHwa" class="lang-btn bg-btn active">산수화</button>
+      <button id="bgWood" class="lang-btn bg-btn">원목</button>
+      <button id="bgSipjangsaeng" class="lang-btn bg-btn">십장생</button>
+      <button id="bgPaper" class="lang-btn bg-btn">한지</button>
+      <div class="settings-divider"></div>
+      <!-- 33 금수 룰 토글 (기본 자유룰) -->
+      <div class="settings-section-label" id="settingsRuleLabel">룰</div>
+      <button id="ruleFree" class="lang-btn rule-btn active">자유룰</button>
+      <button id="ruleRenju" class="lang-btn rule-btn">33 금수</button>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <div class="board-col">
+      <!-- 보드 프레임: 장기와 같은 ::before 배경 레이어 + SVG 격자 + 돌 레이어.
+           단 오목은 정사각(15×15)이라 flip 없음. -->
+      <div class="board-frame" id="frame">
+        <svg class="grid" id="grid" preserveAspectRatio="none"></svg>
+        <div class="stones" id="stones"></div>
+        <!-- 착수 가능한 빈 교차점을 받는 투명 히트영역 레이어 -->
+        <div class="hit-layer" id="hitLayer"></div>
+        <!-- 종료 화면 (장기 win-overlay 재사용) -->
+        <div class="win-overlay" id="winOverlay">
+          <h2 id="winTitle"></h2>
+          <div class="win-sub" id="winSubLine"></div>
+          <p id="winHint">다시 두려면 ‘처음부터’를 누르세요</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side-panel">
+      <!-- 차례 표시: 장기 status 구조 재사용 (흑=먹 / 백=백자) -->
+      <div class="status turn-black" id="status">
+        <span class="turn-line"><span class="turn-dot"></span><b id="turnLabel">흑</b> <span id="turnSuffix">차례</span></span>
+        <span class="msg" id="msg">빈 자리를 눌러 돌을 놓으세요</span>
+      </div>
+
+      <!-- 기보 (장기 movelog 구조 차용 — 좌표 한 칸씩) -->
+      <div class="movelog-wrap">
+        <div class="movelog-title" id="movelogTitle">기 보</div>
+        <ol class="movelog" id="movelog"></ol>
+      </div>
+
+      <div class="controls">
+        <button id="undoBtn">무르기</button>
+        <button id="resetBtn">처음부터</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
