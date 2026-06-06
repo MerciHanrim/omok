@@ -55,6 +55,36 @@
           <p id="winHint">다시 두려면 ‘처음부터’를 누르세요</p>
         </div>
       </div>
+      <!-- ── 메인 메뉴(시작 화면) — 장기 setup-overlay 계승, 오목 매핑 ──
+           단계: 모드+난이도 → 흑/백 → 룰. 룰을 대국 전에 고정하는 게 핵심 목적.
+           (6단계 1차: 난이도는 명인만 활성, 로컬 2인은 메뉴 비노출) -->
+      <div class="setup-overlay show" id="setupOverlay">
+        <div class="setup-panel">
+          <!-- 1단계: 모드 메뉴 + 난이도 서브패널 -->
+          <div class="setup-step" id="levelStep">
+            <div class="setup-title" id="levelStepTitle">오늘은 어떻게 두실까요?</div>
+            <div class="mode-grid" id="modeGrid"></div>
+            <!-- 난이도 (컴퓨터와 두기 선택 후 노출) -->
+            <div class="level-sub-panel" id="levelSubPanel" style="display:none">
+              <div class="level-play"><span class="level-play-label" id="levelPlayLabel">컴퓨터와 두기</span></div>
+              <div class="level-grid" id="levelGrid"></div>
+              <div class="level-note" id="levelNote">상대를 고르세요 · 한 판이 끝나면 다시 고를 수 있습니다</div>
+            </div>
+          </div>
+          <!-- 2단계: 흑/백 선택 (장기 factionStep 자리) -->
+          <div class="setup-step" id="sideStep" style="display:none">
+            <div class="setup-title" id="sideStepTitle">어느 돌로 두실까요?</div>
+            <div class="side-grid" id="sideGrid"></div>
+            <div class="side-note" id="sideNote">흑이 먼저 둡니다 · 한 판이 끝나면 다시 고를 수 있습니다</div>
+          </div>
+          <!-- 3단계: 룰 선택 (장기 setupStep 자리) -->
+          <div class="setup-step" id="ruleStep" style="display:none">
+            <div class="setup-title" id="ruleStepTitle">어떤 룰로 두실까요?</div>
+            <div class="rule-grid" id="ruleGrid"></div>
+            <div class="rule-note" id="ruleStepNote">대국이 시작되면 룰은 고정됩니다</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <aside class="side-panel">
@@ -75,6 +105,21 @@
         <button id="resetBtn">처음부터</button>
       </div>
     </aside>
+  </div>
+</div>
+
+<!-- 오목 규칙 오버레이 (모드 메뉴 "오목 규칙"에서 열림) — 장기 rules-overlay 계승 -->
+<div class="rules-overlay" id="rulesOverlay" style="display:none">
+  <div class="rules-backdrop" id="rulesBackdrop"></div>
+  <div class="rules-panel" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+    <div class="rules-head">
+      <div class="rules-head-text">
+        <h2 class="rules-title" id="rulesTitle">오목 규칙</h2>
+        <p class="rules-subtitle" id="rulesSubtitle">대국을 시작하기 전에 알아두면 좋은 기본 규칙</p>
+      </div>
+      <button class="rules-close" id="rulesClose" aria-label="닫기">✕</button>
+    </div>
+    <div class="rules-body" id="rulesBody"><!-- renderRules()가 채움 --></div>
   </div>
 </div>
 

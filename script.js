@@ -42,6 +42,36 @@
       winHint: '다시 두려면 ‘처음부터’를 누르세요',
       forbidden: '33 금수입니다. 흑은 열린 3을 둘 이상 만들 수 없습니다',
       ruleLabel: '룰', ruleFree: '자유룰', ruleRenju: '33 금수',
+      // ── 메인 메뉴 (6단계) ──
+      menuTitle: '오늘은 어떻게 두실까요?',
+      modeCpu: '컴퓨터와 두기', modeCpuSub: '인공지능과 한 판',
+      modeRules: '오목 규칙', modeRulesSub: '5목·33 금수 설명',
+      modeSettings: '설정', modeSettingsSub: '언어·배경·좌표',
+      modeComing: '준비 중입니다',
+      levelPlayCpu: '컴퓨터와 두기',
+      levelPickMsg: '상대를 고르세요 · 한 판이 끝나면 다시 고를 수 있습니다',
+      lvBeginnerName: '초심자', lvBeginnerSub: '처음 배우는 분을 위한 상대',
+      lvFriendName: '익숙한 벗', lvFriendSub: '가볍게 한 판',
+      lvSeasonedName: '노련한 기객', lvSeasonedSub: '쉽게 빈틈을 보이지 않습니다',
+      lvMasterName: '명인', lvMasterSub: '한 치의 빈틈도 없습니다',
+      lvComingNote: '(준비 중 · 곧 만날 수 있습니다)',
+      chooseSide: '어느 돌로 두실까요?',
+      sideBlackName: '흑', sideBlackSub: '먹빛 · 선공',
+      sideWhiteName: '백', sideWhiteSub: '백자 · 후공',
+      sideRandomName: '무작위', sideRandomSub: '운에 맡기기',
+      sideNote: '흑이 먼저 둡니다 · 한 판이 끝나면 다시 고를 수 있습니다',
+      chooseRule: '어떤 룰로 두실까요?',
+      ruleFreeName: '자유룰', ruleFreeSub: '먼저 5목을 만들면 승리',
+      ruleRenjuName: '33 금수', ruleRenjuSub: '흑은 열린 3을 둘 이상 동시에 못 둠',
+      ruleNote: '대국이 시작되면 룰은 고정됩니다',
+      rulesTitle: '오목 규칙', rulesSubtitle: '대국을 시작하기 전에 알아두면 좋은 기본 규칙',
+      rulesClose: '닫기',
+      rulesSections: [
+        { title: '오목이란', body: '가로·세로 15줄이 만나는 교차점에 흑과 백이 번갈아 돌을 놓습니다. 흑이 먼저 둡니다.' },
+        { title: '승리 조건', body: '자신의 돌을 가로·세로·대각선 중 한 방향으로 다섯 개 연달아 놓으면 이깁니다.' },
+        { title: '자유룰', body: '특별한 금지 없이 먼저 다섯을 만들면 이깁니다. 여섯 개 이상(장목)으로도 이길 수 있습니다.' },
+        { title: '33 금수 (선택)', body: '흑에게만 적용되는 제약입니다. 한 수로 \'열린 3\'을 둘 이상 동시에 만드는 자리에는 둘 수 없습니다. 백에는 제약이 없습니다.' },
+      ],
     },
     en: {
       sub: 'OMOK · Five in a Row',
@@ -57,6 +87,35 @@
       winHint: 'Press “Restart” to play again',
       forbidden: 'Forbidden (double-three). Black cannot make two open threes at once',
       ruleLabel: 'Rule', ruleFree: 'Free', ruleRenju: 'Renju (3-3)',
+      menuTitle: 'How would you like to play today?',
+      modeCpu: 'Play vs Computer', modeCpuSub: 'A game against the AI',
+      modeRules: 'Omok Rules', modeRulesSub: 'Five-in-a-row & 3-3',
+      modeSettings: 'Settings', modeSettingsSub: 'Language, board, coordinates',
+      modeComing: 'Coming soon',
+      levelPlayCpu: 'Play vs Computer',
+      levelPickMsg: 'Choose an opponent · you can pick again after each game',
+      lvBeginnerName: 'Beginner', lvBeginnerSub: 'For those just starting out',
+      lvFriendName: 'Familiar Friend', lvFriendSub: 'A casual game',
+      lvSeasonedName: 'Seasoned Player', lvSeasonedSub: 'Rarely leaves an opening',
+      lvMasterName: 'Master', lvMasterSub: 'Flawless, without a single gap',
+      lvComingNote: '(coming soon)',
+      chooseSide: 'Which stones will you play?',
+      sideBlackName: 'Black', sideBlackSub: 'Ink · moves first',
+      sideWhiteName: 'White', sideWhiteSub: 'Porcelain · moves second',
+      sideRandomName: 'Random', sideRandomSub: 'Leave it to chance',
+      sideNote: 'Black moves first · you can pick again after each game',
+      chooseRule: 'Which rule set?',
+      ruleFreeName: 'Free', ruleFreeSub: 'First to five in a row wins',
+      ruleRenjuName: 'Renju (3-3)', ruleRenjuSub: 'Black cannot make two open threes at once',
+      ruleNote: 'The rule is locked once the game begins',
+      rulesTitle: 'Omok Rules', rulesSubtitle: 'A few basics worth knowing before you play',
+      rulesClose: 'Close',
+      rulesSections: [
+        { title: 'What is Omok', body: 'Black and white take turns placing stones on the intersections of a 15x15 grid. Black goes first.' },
+        { title: 'How to win', body: 'Line up five of your own stones in a row, horizontally, vertically, or diagonally.' },
+        { title: 'Free rule', body: 'No restrictions; the first to make five wins. Six or more in a row also wins.' },
+        { title: '3-3 rule (optional)', body: 'A restriction on Black only. Black may not play a move that creates two or more open threes at once. White has no restriction.' },
+      ],
     },
     'zh-Hans': {
       sub: 'OMOK · 五子棋',
@@ -72,6 +131,35 @@
       winHint: '按“重新开始”再下一局',
       forbidden: '禁手（双三）。黑方不可同时形成两个活三',
       ruleLabel: '规则', ruleFree: '自由规则', ruleRenju: '禁手（三三）',
+      menuTitle: '今天想怎么下？',
+      modeCpu: '与电脑对弈', modeCpuSub: '与人工智能下一局',
+      modeRules: '五子棋规则', modeRulesSub: '五连珠与禁手',
+      modeSettings: '设置', modeSettingsSub: '语言·棋盘·坐标',
+      modeComing: '敬请期待',
+      levelPlayCpu: '与电脑对弈',
+      levelPickMsg: '选择对手 · 每局结束后可重新选择',
+      lvBeginnerName: '初学者', lvBeginnerSub: '为初学者准备的对手',
+      lvFriendName: '熟悉的棋友', lvFriendSub: '轻松下一局',
+      lvSeasonedName: '老练棋客', lvSeasonedSub: '不易露出破绽',
+      lvMasterName: '名手', lvMasterSub: '滴水不漏',
+      lvComingNote: '（敬请期待）',
+      chooseSide: '执哪种棋子？',
+      sideBlackName: '黑', sideBlackSub: '墨色 · 先手',
+      sideWhiteName: '白', sideWhiteSub: '白瓷 · 后手',
+      sideRandomName: '随机', sideRandomSub: '交给运气',
+      sideNote: '黑方先行 · 每局结束后可重新选择',
+      chooseRule: '用哪种规则？',
+      ruleFreeName: '自由规则', ruleFreeSub: '先连成五子者胜',
+      ruleRenjuName: '禁手（三三）', ruleRenjuSub: '黑方不可同时形成两个活三',
+      ruleNote: '对局开始后规则将被锁定',
+      rulesTitle: '五子棋规则', rulesSubtitle: '开始对局前值得了解的基本规则',
+      rulesClose: '关闭',
+      rulesSections: [
+        { title: '什么是五子棋', body: '黑白双方在15×15棋盘的交叉点上轮流落子，黑方先行。' },
+        { title: '胜负条件', body: '将自己的五颗棋子在横、竖或斜方向连成一线即获胜。' },
+        { title: '自由规则', body: '没有特别禁制，先连成五子者胜。连成六子以上（长连）亦可获胜。' },
+        { title: '禁手（三三，可选）', body: '仅对黑方的限制。黑方不可在一手内同时形成两个或以上的活三。白方无限制。' },
+      ],
     },
     'zh-Hant': {
       sub: 'OMOK · 五子棋',
@@ -87,6 +175,35 @@
       winHint: '按「重新開始」再下一局',
       forbidden: '禁手（雙三）。黑方不可同時形成兩個活三',
       ruleLabel: '規則', ruleFree: '自由規則', ruleRenju: '禁手（三三）',
+      menuTitle: '今天想怎麼下？',
+      modeCpu: '與電腦對弈', modeCpuSub: '與人工智慧下一局',
+      modeRules: '五子棋規則', modeRulesSub: '五連珠與禁手',
+      modeSettings: '設定', modeSettingsSub: '語言·棋盤·座標',
+      modeComing: '敬請期待',
+      levelPlayCpu: '與電腦對弈',
+      levelPickMsg: '選擇對手 · 每局結束後可重新選擇',
+      lvBeginnerName: '初學者', lvBeginnerSub: '為初學者準備的對手',
+      lvFriendName: '熟悉的棋友', lvFriendSub: '輕鬆下一局',
+      lvSeasonedName: '老練棋客', lvSeasonedSub: '不易露出破綻',
+      lvMasterName: '名手', lvMasterSub: '滴水不漏',
+      lvComingNote: '（敬請期待）',
+      chooseSide: '執哪種棋子？',
+      sideBlackName: '黑', sideBlackSub: '墨色 · 先手',
+      sideWhiteName: '白', sideWhiteSub: '白瓷 · 後手',
+      sideRandomName: '隨機', sideRandomSub: '交給運氣',
+      sideNote: '黑方先行 · 每局結束後可重新選擇',
+      chooseRule: '用哪種規則？',
+      ruleFreeName: '自由規則', ruleFreeSub: '先連成五子者勝',
+      ruleRenjuName: '禁手（三三）', ruleRenjuSub: '黑方不可同時形成兩個活三',
+      ruleNote: '對局開始後規則將被鎖定',
+      rulesTitle: '五子棋規則', rulesSubtitle: '開始對局前值得了解的基本規則',
+      rulesClose: '關閉',
+      rulesSections: [
+        { title: '什麼是五子棋', body: '黑白雙方在15×15棋盤的交叉點上輪流落子，黑方先行。' },
+        { title: '勝負條件', body: '將自己的五顆棋子在橫、豎或斜方向連成一線即獲勝。' },
+        { title: '自由規則', body: '沒有特別禁制，先連成五子者勝。連成六子以上（長連）亦可獲勝。' },
+        { title: '禁手（三三，可選）', body: '僅對黑方的限制。黑方不可在一手內同時形成兩個或以上的活三。白方無限制。' },
+      ],
     },
     ja: {
       sub: 'OMOK · 五目並べ',
@@ -102,6 +219,35 @@
       winHint: '「最初から」を押すともう一局',
       forbidden: '禁じ手（三々）。黒は活三を同時に二つ作れません',
       ruleLabel: 'ルール', ruleFree: '自由', ruleRenju: '三々禁止',
+      menuTitle: '今日はどう打ちましょうか？',
+      modeCpu: 'コンピュータと対局', modeCpuSub: 'AIと一局',
+      modeRules: '五目並べのルール', modeRulesSub: '五連と三々の説明',
+      modeSettings: '設定', modeSettingsSub: '言語·盤·座標',
+      modeComing: '準備中です',
+      levelPlayCpu: 'コンピュータと対局',
+      levelPickMsg: '相手を選んでください · 一局終わるたびに選び直せます',
+      lvBeginnerName: '初心者', lvBeginnerSub: '初めての方のための相手',
+      lvFriendName: '気軽な友', lvFriendSub: '軽く一局',
+      lvSeasonedName: '老練な棋客', lvSeasonedSub: 'なかなか隙を見せません',
+      lvMasterName: '名人', lvMasterSub: '一分の隙もありません',
+      lvComingNote: '（準備中）',
+      chooseSide: 'どの石で打ちますか？',
+      sideBlackName: '黒', sideBlackSub: '墨 · 先手',
+      sideWhiteName: '白', sideWhiteSub: '白磁 · 後手',
+      sideRandomName: 'ランダム', sideRandomSub: '運に任せる',
+      sideNote: '黒が先に打ちます · 一局終わるたびに選び直せます',
+      chooseRule: 'どのルールで打ちますか？',
+      ruleFreeName: '自由', ruleFreeSub: '先に五を作れば勝ち',
+      ruleRenjuName: '三々禁止', ruleRenjuSub: '黒は活三を同時に二つ作れません',
+      ruleNote: '対局が始まるとルールは固定されます',
+      rulesTitle: '五目並べのルール', rulesSubtitle: '対局を始める前に知っておくとよい基本ルール',
+      rulesClose: '閉じる',
+      rulesSections: [
+        { title: '五目並べとは', body: '黒と白が15×15の交点に交互に石を置きます。黒が先手です。' },
+        { title: '勝利条件', body: '自分の石を縦・横・斜めのいずれかに五つ並べると勝ちです。' },
+        { title: '自由ルール', body: '特別な禁じ手はなく、先に五つ並べれば勝ちです。六つ以上（長連）でも勝てます。' },
+        { title: '三々禁止（任意）', body: '黒のみに適用される制約です。一手で活三を二つ以上同時に作る場所には打てません。白に制約はありません。' },
+      ],
     },
     de: {
       sub: 'OMOK · Fünf in einer Reihe',
@@ -117,6 +263,35 @@
       winHint: '„Neu starten“ für eine neue Partie',
       forbidden: 'Verboten (Doppel-Drei). Schwarz darf nicht zwei offene Dreien zugleich bilden',
       ruleLabel: 'Regel', ruleFree: 'Frei', ruleRenju: 'Renju (3-3)',
+      menuTitle: 'Wie möchten Sie heute spielen?',
+      modeCpu: 'Gegen Computer', modeCpuSub: 'Eine Partie gegen die KI',
+      modeRules: 'Omok-Regeln', modeRulesSub: 'Fünf in einer Reihe & 3-3',
+      modeSettings: 'Einstellungen', modeSettingsSub: 'Sprache, Brett, Koordinaten',
+      modeComing: 'Demnächst',
+      levelPlayCpu: 'Gegen Computer',
+      levelPickMsg: 'Wählen Sie einen Gegner · nach jeder Partie neu wählbar',
+      lvBeginnerName: 'Anfänger', lvBeginnerSub: 'Für alle, die gerade beginnen',
+      lvFriendName: 'Vertrauter Freund', lvFriendSub: 'Eine lockere Partie',
+      lvSeasonedName: 'Erfahrener Spieler', lvSeasonedSub: 'Zeigt selten eine Blöße',
+      lvMasterName: 'Meister', lvMasterSub: 'Makellos, ohne jede Lücke',
+      lvComingNote: '(demnächst)',
+      chooseSide: 'Mit welchen Steinen spielen Sie?',
+      sideBlackName: 'Schwarz', sideBlackSub: 'Tusche · zieht zuerst',
+      sideWhiteName: 'Weiß', sideWhiteSub: 'Porzellan · zieht als Zweiter',
+      sideRandomName: 'Zufall', sideRandomSub: 'Dem Glück überlassen',
+      sideNote: 'Schwarz zieht zuerst · nach jeder Partie neu wählbar',
+      chooseRule: 'Welches Regelwerk?',
+      ruleFreeName: 'Frei', ruleFreeSub: 'Wer zuerst fünf in einer Reihe hat, gewinnt',
+      ruleRenjuName: 'Renju (3-3)', ruleRenjuSub: 'Schwarz darf nicht zwei offene Dreien zugleich bilden',
+      ruleNote: 'Die Regel wird zu Spielbeginn festgelegt',
+      rulesTitle: 'Omok-Regeln', rulesSubtitle: 'Einige Grundlagen vor dem Spiel',
+      rulesClose: 'Schließen',
+      rulesSections: [
+        { title: 'Was ist Omok', body: 'Schwarz und Weiß setzen abwechselnd Steine auf die Schnittpunkte eines 15x15-Gitters. Schwarz beginnt.' },
+        { title: 'Siegbedingung', body: 'Bringen Sie fünf eigene Steine waagerecht, senkrecht oder diagonal in eine Reihe.' },
+        { title: 'Freie Regel', body: 'Keine Beschränkungen; wer zuerst fünf bildet, gewinnt. Auch sechs oder mehr (Langreihe) gewinnen.' },
+        { title: '3-3-Regel (optional)', body: 'Eine Beschränkung nur für Schwarz. Schwarz darf keinen Zug machen, der zugleich zwei oder mehr offene Dreien bildet. Weiß ist nicht beschränkt.' },
+      ],
     },
     fr: {
       sub: 'OMOK · Cinq en ligne',
@@ -132,6 +307,35 @@
       winHint: 'Appuyez sur « Recommencer » pour rejouer',
       forbidden: 'Interdit (double trois). Noir ne peut former deux trois ouverts à la fois',
       ruleLabel: 'Règle', ruleFree: 'Libre', ruleRenju: 'Renju (3-3)',
+      menuTitle: 'Comment voulez-vous jouer aujourd’hui ?',
+      modeCpu: 'Jouer contre l’ordinateur', modeCpuSub: 'Une partie contre l’IA',
+      modeRules: 'Règles de l’Omok', modeRulesSub: 'Cinq en ligne & 3-3',
+      modeSettings: 'Réglages', modeSettingsSub: 'Langue, plateau, coordonnées',
+      modeComing: 'Bientôt disponible',
+      levelPlayCpu: 'Jouer contre l’ordinateur',
+      levelPickMsg: 'Choisissez un adversaire · vous pourrez rechoisir après chaque partie',
+      lvBeginnerName: 'Débutant', lvBeginnerSub: 'Pour ceux qui débutent',
+      lvFriendName: 'Ami familier', lvFriendSub: 'Une partie décontractée',
+      lvSeasonedName: 'Joueur aguerri', lvSeasonedSub: 'Laisse rarement une ouverture',
+      lvMasterName: 'Maître', lvMasterSub: 'Sans la moindre faille',
+      lvComingNote: '(bientôt disponible)',
+      chooseSide: 'Avec quelles pierres jouez-vous ?',
+      sideBlackName: 'Noir', sideBlackSub: 'Encre · joue en premier',
+      sideWhiteName: 'Blanc', sideWhiteSub: 'Porcelaine · joue en second',
+      sideRandomName: 'Aléatoire', sideRandomSub: 'Laisser au hasard',
+      sideNote: 'Noir joue en premier · vous pourrez rechoisir après chaque partie',
+      chooseRule: 'Quel jeu de règles ?',
+      ruleFreeName: 'Libre', ruleFreeSub: 'Le premier à aligner cinq gagne',
+      ruleRenjuName: 'Renju (3-3)', ruleRenjuSub: 'Noir ne peut former deux trois ouverts à la fois',
+      ruleNote: 'La règle est figée au début de la partie',
+      rulesTitle: 'Règles de l’Omok', rulesSubtitle: 'Quelques bases utiles avant de jouer',
+      rulesClose: 'Fermer',
+      rulesSections: [
+        { title: 'Qu’est-ce que l’Omok', body: 'Noir et Blanc posent tour à tour des pierres sur les intersections d’une grille 15x15. Noir commence.' },
+        { title: 'Condition de victoire', body: 'Alignez cinq de vos pierres horizontalement, verticalement ou en diagonale.' },
+        { title: 'Règle libre', body: 'Aucune restriction ; le premier à aligner cinq gagne. Six ou plus (longue ligne) gagnent aussi.' },
+        { title: 'Règle 3-3 (optionnelle)', body: 'Une restriction pour Noir uniquement. Noir ne peut jouer un coup créant deux trois ouverts ou plus à la fois. Blanc n’a aucune restriction.' },
+      ],
     },
   };
 
@@ -165,22 +369,44 @@
   const undoBtn    = document.getElementById('undoBtn');
   const resetBtn   = document.getElementById('resetBtn');
 
+  // ── 사운드 (§7 — 오목 전용 sfx. assets/sound/, 단수 폴더) ──
+  // 착수음: 사람·AI 둘 다. 승/패음: endGame에서 사람 입장 기준 한 번.
+  // 출처(→ ASSETS_LICENSE.md):
+  //   omok_sfx_win  = Sarah H (astralsynthesizer), Pixabay
+  //   omok_sfx_lose = Universfield, Pixabay
+  // ★ 음소거 토글은 (c) 설정 메뉴에서 좌표 토글과 함께 넣을 예정. 지금은 소리만.
+  const SFX = {
+    move: new Audio('assets/sound/omok_sfx_move.mp3'),
+    win:  new Audio('assets/sound/omok_sfx_win.mp3'),
+    lose: new Audio('assets/sound/omok_sfx_lose.mp3'),
+  };
+  for (const a of Object.values(SFX)) a.preload = 'auto';
+  // 재생 헬퍼 — 되감아 연타 대응. 파일 없음/자동재생 차단은 조용히 무시.
+  function playSfx(name) {
+    const a = SFX[name];
+    if (!a) return;
+    try { a.currentTime = 0; a.play().catch(() => {}); } catch (_) {}
+  }
+
   // ── 게임 상태 ──────────────────────────────────────────
   let board, turn, moveLog, gameOver;
   let renjuMode = false;   // 33 금수 룰. 기본 OFF(자유룰). 설정에서 토글.
 
   // ── AI 대전 상태 (4단계 a: 평가함수 + 1수 탐색) ──────────
-  // ★ 메뉴는 (c)에서 만든다(핸드오버 결정). 지금은 URL 파라미터로만 켬:
-  //    ?ai=white  → 사람=흑, AI=백 (기본 테스트용)
-  //    ?ai=black  → 사람=백, AI=흑 (AI가 선; 금수 회피 동작 확인용)
-  //    파라미터 없으면 aiSide=null → 기존 로컬 2인 그대로(내부 테스트 모드).
-  //    ?debug=1 은 (c) 메뉴 단계에서 2인 모드 진입용으로 예약(지금은 미사용).
+  // 6단계: 정식 진입은 메인 메뉴(아래). URL 파라미터는 개발용으로 유지:
+  //    ?ai=white  → 메뉴 건너뛰고 사람=흑, AI=백 즉시 대국 (개발 테스트)
+  //    ?ai=black  → 사람=백, AI=흑(선) 즉시 대국
+  //    ?debug=1   → 로컬 2인 모드(aiSide=null) 즉시 시작 (국면 재현·금수 테스트)
+  //    파라미터 없으면 → 메인 메뉴 표시(정식 흐름).
   let aiSide = null;       // BLACK / WHITE / null(2인)
   let aiThinking = false;  // AI 계산 중 사람 입력·중복 트리거 방지 플래그
+  let useMenu = true;      // 메뉴로 진입하는가 (URL 파라미터 있으면 false)
   (function readAiParam() {
-    const p = new URLSearchParams(location.search).get('ai');
-    if (p === 'black') aiSide = BLACK;
-    else if (p === 'white') aiSide = WHITE;
+    const params = new URLSearchParams(location.search);
+    const p = params.get('ai');
+    if (p === 'black') { aiSide = BLACK; useMenu = false; }
+    else if (p === 'white') { aiSide = WHITE; useMenu = false; }
+    else if (params.get('debug') === '1') { aiSide = null; useMenu = false; }
   })();
 
   function newGame() {
@@ -320,6 +546,7 @@
     }
     board[r][c] = turn;
     moveLog.push({ r, c, side: turn });
+    playSfx('move');
     if (checkWin(r, c, turn)) {
       render(); renderMovelog(); endGame(turn);
       return;
@@ -540,6 +767,7 @@
       const [r, c] = mv;
       board[r][c] = turn;
       moveLog.push({ r, c, side: turn });
+      playSfx('move');
       if (checkWin(r, c, turn)) {
         render(); renderMovelog(); endGame(turn);
         return;
@@ -591,6 +819,8 @@
   // 텍스트: "흑 승리" + "먹빛 조약돌이 다섯 줄을 완성했습니다" (자연 연결)
   function endGame(winner) {
     gameOver = true;
+    // 사운드: AI 대전에서 승자가 AI면 사람이 진 것 → lose. 그 외(사람 승/2인) → win.
+    playSfx((aiSide && winner === aiSide) ? 'lose' : 'win');
     winTitle.textContent = t('win', sideName(winner));
     winSubLine.textContent = t('winSub', stoneName(winner));
     winHint.textContent = t('winHint');
@@ -640,6 +870,18 @@
       updateStatus();
     }
     renderMovelog();
+    // 메뉴가 열려 있으면 현재 단계도 새 언어로 다시 그림
+    if (typeof menuOpen !== 'undefined' && menuOpen) {
+      if (levelStep.style.display !== 'none') {
+        levelStepTitle.textContent = t('menuTitle');
+        if (modeGrid.style.display !== 'none') renderModeGrid();
+        else showLevelGrid();
+      } else if (sideStep.style.display !== 'none') {
+        showSideStep();
+      } else if (ruleStep.style.display !== 'none') {
+        showRuleStep();
+      }
+    }
   }
   // 언어와 무관하게 항상 다시 칠하는 정적 텍스트들
   function applyStaticTexts() {
@@ -700,14 +942,241 @@
     toggleSettings(!settingsDropdown.classList.contains('open')));
   settingsBackdrop.addEventListener('click', () => toggleSettings(false));
 
+  /* ============================================================
+     ── 메인 메뉴(시작 화면) — 6단계 1차. 장기 setup-overlay 계승 ──
+     목적: 룰을 대국 전에 고정. 흐름: 모드+난이도 → 흑/백 → 룰 → 대국.
+       · 난이도: 명인만 활성(현재 AI=단일 강도). 나머지 3개 회색(5단계에서 연결).
+       · 로컬 2인: 메뉴 비노출. ?debug=1 또는 ?ai= 로만 진입(개발용).
+     ============================================================ */
+  const setupOverlay = document.getElementById('setupOverlay');
+  const levelStep    = document.getElementById('levelStep');
+  const sideStep     = document.getElementById('sideStep');
+  const ruleStep     = document.getElementById('ruleStep');
+  const modeGrid     = document.getElementById('modeGrid');
+  const levelSubPanel= document.getElementById('levelSubPanel');
+  const levelGrid    = document.getElementById('levelGrid');
+  const sideGrid     = document.getElementById('sideGrid');
+  const ruleGrid     = document.getElementById('ruleGrid');
+  const levelStepTitle = document.getElementById('levelStepTitle');
+  const levelPlayLabel = document.getElementById('levelPlayLabel');
+  const levelNote      = document.getElementById('levelNote');
+  const sideStepTitle  = document.getElementById('sideStepTitle');
+  const sideNote       = document.getElementById('sideNote');
+  const ruleStepTitle  = document.getElementById('ruleStepTitle');
+  const ruleStepNote   = document.getElementById('ruleStepNote');
+
+  // 메뉴에서 정해지는 대국 설정 (대국 시작 시 aiSide/renjuMode로 반영)
+  let pendingSide = BLACK;   // 사람이 둘 색 (흑/백/무작위 해석 후 확정)
+  let menuOpen = false;
+
+  function showSetup() {
+    menuOpen = true;
+    setupOverlay.classList.add('show');
+    showLevelStep();
+  }
+  function hideSetup() {
+    menuOpen = false;
+    setupOverlay.classList.remove('show');
+  }
+
+  // 1단계: 모드 메뉴 (난이도 서브패널은 숨김 상태로 시작)
+  function showLevelStep() {
+    levelStep.style.display = '';
+    sideStep.style.display = 'none';
+    ruleStep.style.display = 'none';
+    modeGrid.style.display = '';
+    levelSubPanel.style.display = 'none';
+    levelStepTitle.textContent = t('menuTitle');
+    renderModeGrid();
+  }
+
+  const MODE_LIST = [
+    { id: 'cpu',      nameKey: 'modeCpu',      subKey: 'modeCpuSub',      active: true },
+    { id: 'rules',    nameKey: 'modeRules',    subKey: 'modeRulesSub',    active: true },
+    { id: 'settings', nameKey: 'modeSettings', subKey: 'modeSettingsSub', active: true },
+  ];
+  function renderModeGrid() {
+    modeGrid.innerHTML = '';
+    for (const m of MODE_LIST) {
+      const card = document.createElement('div');
+      card.className = 'mode-card' + (m.active ? '' : ' mode-coming');
+      card.innerHTML =
+        `<span class="mode-text"><span class="mode-name">${t(m.nameKey)}</span>` +
+        `<span class="mode-sub">${t(m.subKey)}</span></span>`;
+      card.onclick = (e) => { e.stopPropagation(); onModeSelect(m.id); };
+      modeGrid.appendChild(card);
+    }
+  }
+  function onModeSelect(id) {
+    if (id === 'cpu') showLevelGrid();
+    else if (id === 'rules') openRulesOverlay();
+    else if (id === 'settings') toggleSettings(true);
+  }
+
+  // 난이도 서브패널 (컴퓨터와 두기 선택 후)
+  function showLevelGrid() {
+    modeGrid.style.display = 'none';
+    levelSubPanel.style.display = '';
+    levelPlayLabel.textContent = t('levelPlayCpu');
+    levelNote.textContent = t('levelPickMsg');
+    renderLevelGrid();
+  }
+  // 난이도 4종. ★ 현재 'master'만 active. 나머지는 회색(5단계 연결).
+  const LEVEL_LIST = [
+    { id: 'beginner', emoji: '🌱', nameKey: 'lvBeginnerName', subKey: 'lvBeginnerSub', active: false },
+    { id: 'friend',   emoji: '🍃', nameKey: 'lvFriendName',   subKey: 'lvFriendSub',   active: false },
+    { id: 'seasoned', emoji: '🎋', nameKey: 'lvSeasonedName', subKey: 'lvSeasonedSub', active: false },
+    { id: 'master',   emoji: '🏮', nameKey: 'lvMasterName',   subKey: 'lvMasterSub',   active: true  },
+  ];
+  let levelPicking = false;
+  function renderLevelGrid() {
+    levelGrid.innerHTML = '';
+    for (const lv of LEVEL_LIST) {
+      const card = document.createElement('div');
+      card.className = 'level-card' + (lv.active ? '' : ' level-coming');
+      const sub = lv.active ? t(lv.subKey) : (t(lv.subKey) + ' ' + t('lvComingNote'));
+      card.innerHTML =
+        `<div class="lv-emoji">${lv.emoji}</div>` +
+        `<div class="lv-text"><div class="lv-name">${t(lv.nameKey)}</div>` +
+        `<div class="lv-sub">${sub}</div></div>`;
+      if (lv.active) {
+        card.onclick = (e) => { e.stopPropagation(); chooseLevel(lv.id, card); };
+      } else {
+        card.onclick = (e) => { e.stopPropagation(); };  // 회색: 클릭 무시
+      }
+      levelGrid.appendChild(card);
+    }
+  }
+  function chooseLevel(id, cardEl) {
+    if (levelPicking) return;
+    levelPicking = true;
+    // (5단계에서 id별 blunder 연결. 지금은 명인 단일 강도라 강도 분기 없음.)
+    for (const c of levelGrid.children) c.classList.remove('current');
+    if (cardEl) cardEl.classList.add('current');
+    setTimeout(() => { levelPicking = false; showSideStep(); }, 420);
+  }
+
+  // 2단계: 흑/백/무작위 선택
+  function showSideStep() {
+    levelStep.style.display = 'none';
+    sideStep.style.display = '';
+    ruleStep.style.display = 'none';
+    sideStepTitle.textContent = t('chooseSide');
+    sideNote.textContent = t('sideNote');
+    renderSideGrid();
+  }
+  const SIDE_LIST = [
+    { id: 'black',  cls: 'black', nameKey: 'sideBlackName',  subKey: 'sideBlackSub'  },
+    { id: 'white',  cls: 'white', nameKey: 'sideWhiteName',  subKey: 'sideWhiteSub'  },
+    { id: 'random', cls: 'rand',  nameKey: 'sideRandomName', subKey: 'sideRandomSub' },
+  ];
+  function renderSideGrid() {
+    sideGrid.innerHTML = '';
+    for (const s of SIDE_LIST) {
+      const card = document.createElement('div');
+      card.className = 'side-card';
+      card.innerHTML =
+        `<div class="sc-stone ${s.cls}"></div>` +
+        `<div class="sc-name">${t(s.nameKey)}<span class="sc-sub">${t(s.subKey)}</span></div>`;
+      card.onclick = (e) => { e.stopPropagation(); chooseSide(s.id); };
+      sideGrid.appendChild(card);
+    }
+  }
+  function chooseSide(id) {
+    // 사람이 둘 색 확정. 무작위면 50:50.
+    if (id === 'random') pendingSide = (Math.random() < 0.5) ? BLACK : WHITE;
+    else pendingSide = (id === 'black') ? BLACK : WHITE;
+    showRuleStep();
+  }
+
+  // 3단계: 룰 선택 → 대국 시작
+  function showRuleStep() {
+    levelStep.style.display = 'none';
+    sideStep.style.display = 'none';
+    ruleStep.style.display = '';
+    ruleStepTitle.textContent = t('chooseRule');
+    ruleStepNote.textContent = t('ruleNote');
+    renderRuleGrid();
+  }
+  const RULE_LIST = [
+    { id: 'free',  renju: false, nameKey: 'ruleFreeName',  subKey: 'ruleFreeSub'  },
+    { id: 'renju', renju: true,  nameKey: 'ruleRenjuName', subKey: 'ruleRenjuSub' },
+  ];
+  function renderRuleGrid() {
+    ruleGrid.innerHTML = '';
+    for (const r of RULE_LIST) {
+      const card = document.createElement('div');
+      card.className = 'rule-card';
+      card.innerHTML =
+        `<div class="rc-name">${t(r.nameKey)}<span class="rc-sub">${t(r.subKey)}</span></div>`;
+      card.onclick = (e) => { e.stopPropagation(); chooseRule(r.renju); };
+      ruleGrid.appendChild(card);
+    }
+  }
+  function chooseRule(renju) {
+    // 메뉴 선택을 실제 게임 상태로 반영하고 대국 시작.
+    aiSide = (pendingSide === BLACK) ? WHITE : BLACK;   // 사람 반대편이 AI
+    setRule(renju);          // renjuMode + 설정⚙ 룰 버튼 동기화
+    hideSetup();
+    newGame();
+  }
+
+  // ── 규칙 오버레이 (모드 "오목 규칙") — 장기 rules-overlay 계승 ──
+  const rulesOverlay = document.getElementById('rulesOverlay');
+  const rulesBackdrop = document.getElementById('rulesBackdrop');
+  const rulesBody = document.getElementById('rulesBody');
+  const rulesClose = document.getElementById('rulesClose');
+  function renderRules() {
+    document.getElementById('rulesTitle').textContent = t('rulesTitle');
+    const sub = document.getElementById('rulesSubtitle');
+    if (sub) sub.textContent = t('rulesSubtitle');
+    rulesClose.setAttribute('aria-label', t('rulesClose'));
+    const sections = t('rulesSections') || [];
+    rulesBody.innerHTML = '';
+    sections.forEach((sec, i) => {
+      const card = document.createElement('div');
+      card.className = 'rules-section';
+      card.innerHTML =
+        `<span class="rules-num">${i + 1}</span>` +
+        `<h3 class="rules-section-title">${sec.title}</h3>` +
+        `<p class="rules-section-body">${sec.body}</p>`;
+      rulesBody.appendChild(card);
+    });
+  }
+  function openRulesOverlay() {
+    renderRules();
+    rulesOverlay.style.display = '';
+    rulesBody.scrollTop = 0;
+    document.addEventListener('keydown', rulesEsc);
+  }
+  function closeRulesOverlay() {
+    rulesOverlay.style.display = 'none';
+    document.removeEventListener('keydown', rulesEsc);
+  }
+  function rulesEsc(e) { if (e.key === 'Escape') closeRulesOverlay(); }
+  rulesClose.onclick = closeRulesOverlay;
+  rulesBackdrop.onclick = closeRulesOverlay;
+
   // ── 이벤트 ─────────────────────────────────────────────
   undoBtn.addEventListener('click', undo);
-  resetBtn.addEventListener('click', newGame);
+  // "처음부터": 메뉴 모드면 메인 메뉴로 복귀(룰 다시 선택), 개발 모드면 즉시 새 게임.
+  resetBtn.addEventListener('click', () => {
+    if (useMenu) showSetup();
+    else newGame();
+  });
   window.addEventListener('resize', render);
 
   // ── 시작 ───────────────────────────────────────────────
   // 기본 언어 버튼 활성화 + 정적 텍스트
   document.getElementById('langKo').classList.add('active');
   applyStaticTexts();
-  newGame();
+  if (useMenu) {
+    // 메뉴를 띄우고, 빈 보드를 뒤에 깔아둔다(렌더만, 대국은 메뉴 통과 후).
+    newGame();
+    showSetup();
+  } else {
+    // 개발 진입(?ai= / ?debug=1): 메뉴 건너뛰고 즉시 대국.
+    hideSetup();
+    newGame();
+  }
 })();
