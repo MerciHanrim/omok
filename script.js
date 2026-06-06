@@ -169,15 +169,32 @@
   let board, turn, moveLog, gameOver;
   let renjuMode = false;   // 33 금수 룰. 기본 OFF(자유룰). 설정에서 토글.
 
+  // ── AI 대전 상태 (4단계 a: 평가함수 + 1수 탐색) ──────────
+  // ★ 메뉴는 (c)에서 만든다(핸드오버 결정). 지금은 URL 파라미터로만 켬:
+  //    ?ai=white  → 사람=흑, AI=백 (기본 테스트용)
+  //    ?ai=black  → 사람=백, AI=흑 (AI가 선; 금수 회피 동작 확인용)
+  //    파라미터 없으면 aiSide=null → 기존 로컬 2인 그대로(내부 테스트 모드).
+  //    ?debug=1 은 (c) 메뉴 단계에서 2인 모드 진입용으로 예약(지금은 미사용).
+  let aiSide = null;       // BLACK / WHITE / null(2인)
+  let aiThinking = false;  // AI 계산 중 사람 입력·중복 트리거 방지 플래그
+  (function readAiParam() {
+    const p = new URLSearchParams(location.search).get('ai');
+    if (p === 'black') aiSide = BLACK;
+    else if (p === 'white') aiSide = WHITE;
+  })();
+
   function newGame() {
     board = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
     turn = BLACK;
     moveLog = [];
     gameOver = false;
+    aiThinking = false;
     winOverlay.classList.remove('show');
     render();
     updateStatus();
     renderMovelog();
+    // AI가 흑(선)이면 첫 수를 둔다
+    if (aiSide === BLACK) aiMove();
   }
 
   // ── 좌표계 (1단계 그대로) ───────────────────────────────
@@ -292,6 +309,8 @@
   // ── 착수 ───────────────────────────────────────────────
   function onPlace(r, c) {
     if (gameOver || board[r][c]) return;
+    // AI 대전 중 AI 차례면 사람 입력 무시(AI 계산 중 포함)
+    if (aiSide && (turn === aiSide || aiThinking)) return;
     // 33 금수: 룰 ON + 흑 차례 + 금수 자리면 착수 차단 + 안내 (미리보기 ✕ 없음)
     if (renjuMode && turn === BLACK && isForbiddenMove(r, c, BLACK)) {
       msg.textContent = t('forbidden');
@@ -307,6 +326,8 @@
     }
     turn = (turn === BLACK) ? WHITE : BLACK;
     render(); updateStatus(); renderMovelog();
+    // 사람이 두고 나서 AI 차례면 AI가 응수
+    if (aiSide && turn === aiSide && !gameOver) aiMove();
   }
 
   // ── 5목 판정 (1단계 그대로 — 마지막 돌 4방향) ────────────
@@ -380,12 +401,167 @@
     return openThrees >= 2;
   }
 
+  /* ============================================================
+     ── AI 대전 엔진 — 4단계 (a): 평가함수 + 1수 탐색 ──────────
+     목표: "그냥 두면 막고, 이길 자리 있으면 이기는" 가장 단순한 상대.
+     미니맥스/깊이 확장은 (b), 난이도·blunder는 (c)에서.
+
+     설계 요약:
+       1) genCandidates : 기존 돌 반경 R 안의 빈칸만 후보로 (탐색량 관리)
+       2) scoreLine     : 한 방향 (연속길이 + 양끝 열림) → 점수
+       3) evalMove      : 한 자리에 side가 두면 4방향 합산 점수 (공격가치)
+       4) aiPick        : ① 즉시 5목 → ② 상대 즉승 막기 → ③ 공·수 종합 최고점
+     ★ 평가는 lineInfo(기존 함수)를 그대로 재사용 — 33 판정과 같은 재료.
+     ============================================================ */
+
+  // 후보 탐색 반경 — 기존 돌에서 이 칸 수 이내의 빈칸만 본다.
+  // 1~2칸이면 오목에선 충분(멀리 떨어진 수는 거의 무의미). 탐색량 ↓.
+  const AI_RADIUS = 2;
+
+  // 라인 점수표 — (연속 길이, 열린 끝 개수) → 가중치.
+  //  열린4(__4__)는 사실상 승리 예약, 닫힌4·열린3은 강한 위협.
+  //  값은 (b) 미니맥스 붙이기 전 1수 비교용 상대값. 절대 크기보다 '간격'이 중요.
+  function scoreLine(len, openEnds) {
+    if (len >= WIN) return 1000000;          // 5목 = 승리
+    if (len === 4) {
+      if (openEnds === 2) return 100000;     // 열린4 — 막아도 다른 쪽으로 5
+      if (openEnds === 1) return 10000;      // 닫힌4 — 한 수면 5 (반드시 대응)
+      return 0;                              // 양끝 막힌 4 — 가치 없음
+    }
+    if (len === 3) {
+      if (openEnds === 2) return 5000;       // 열린3 — 방치 시 열린4로
+      if (openEnds === 1) return 500;        // 닫힌3
+      return 0;
+    }
+    if (len === 2) {
+      if (openEnds === 2) return 200;        // 열린2
+      if (openEnds === 1) return 30;
+      return 0;
+    }
+    if (len === 1) return openEnds === 2 ? 10 : 2;
+    return 0;
+  }
+
+  // (r,c)에 side를 두면 생기는 4방향 라인 점수의 합 = 그 수의 '공격 가치'.
+  // 가상 착수 후 lineInfo로 측정하고 원상복구(부작용 없음).
+  function evalMove(r, c, side) {
+    board[r][c] = side;
+    let s = 0;
+    for (const [dr, dc] of DIRS) {
+      const info = lineInfo(r, c, dr, dc, side);
+      s += scoreLine(info.len, info.openEnds);
+    }
+    board[r][c] = null;
+    return s;
+  }
+
+  // 후보 생성 — 돌이 하나라도 있으면 그 주변 반경 R의 빈칸만.
+  // 빈 판이면 천원(중앙) 하나만 반환(첫 수 고정).
+  function genCandidates() {
+    const cands = [];
+    let any = false;
+    const mark = Array.from({ length: SIZE }, () => Array(SIZE).fill(false));
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        if (!board[r][c]) continue;
+        any = true;
+        for (let dr = -AI_RADIUS; dr <= AI_RADIUS; dr++) {
+          for (let dc = -AI_RADIUS; dc <= AI_RADIUS; dc++) {
+            const nr = r + dr, nc = c + dc;
+            if (inB(nr, nc) && !board[nr][nc] && !mark[nr][nc]) {
+              mark[nr][nc] = true;
+              cands.push([nr, nc]);
+            }
+          }
+        }
+      }
+    }
+    if (!any) {
+      const m = Math.floor(SIZE / 2);
+      return [[m, m]];   // 천원 H8
+    }
+    return cands;
+  }
+
+  // 즉시 5목이 되는 자리인가 (그 수 하나로 게임 끝)
+  function isWinningMove(r, c, side) {
+    board[r][c] = side;
+    const win = checkWin(r, c, side);
+    board[r][c] = null;
+    return win;
+  }
+
+  // ★ AI 한 수 선택 — (a) 단계 의사결정.
+  //   ① 내가 두면 즉시 5목 → 그 자리(이기는 수 최우선)
+  //   ② 상대가 다음에 두면 즉시 5목인 자리 → 막기(지는 수 차단)
+  //   ③ 아니면 (내 공격가치 + 상대 둘 때 위협가치)가 최대인 자리
+  //   흑+renjuMode면 금수 자리는 후보에서 제외(둘 수 없으니).
+  function aiPick(side) {
+    const opp = (side === BLACK) ? WHITE : BLACK;
+    let cands = genCandidates();
+    // 흑이고 33룰이면 금수 자리 제거 (단, 즉시 5목은 isForbiddenMove가 이미 허용)
+    if (side === BLACK && renjuMode) {
+      cands = cands.filter(([r, c]) => !isForbiddenMove(r, c, BLACK));
+    }
+    if (!cands.length) return null;
+
+    // ① 즉승
+    for (const [r, c] of cands) {
+      if (isWinningMove(r, c, side)) return [r, c];
+    }
+    // ② 상대 즉승 차단 — 상대가 둘 수 있는 5목 자리를 내가 먼저 막는다
+    for (const [r, c] of cands) {
+      if (isWinningMove(r, c, opp)) return [r, c];
+    }
+    // ③ 공·수 종합 점수. 같은 자리에 '내가 두는 가치'와
+    //    '상대가 거기 둘 때의 위협(=막을 가치)'을 더해 비교.
+    //    상대 위협은 살짝 깎아(0.9) 동점 시 공격을 약간 선호.
+    let best = null, bestScore = -Infinity;
+    for (const [r, c] of cands) {
+      const atk = evalMove(r, c, side);
+      const def = evalMove(r, c, opp) * 0.9;
+      const total = atk + def;
+      if (total > bestScore) { bestScore = total; best = [r, c]; }
+    }
+    return best;
+  }
+
+  // AI 착수 실행 — 사람 onPlace와 같은 경로를 타되, 차례·종료를 직접 처리.
+  // setTimeout으로 살짝 늦춰 "두는 느낌" + 렌더 반영 시간 확보.
+  function aiMove() {
+    if (gameOver || turn !== aiSide) return;
+    aiThinking = true;
+    updateStatus();   // "두는 중" 표시(아래 updateStatus에서 분기)
+    setTimeout(() => {
+      if (gameOver || turn !== aiSide) { aiThinking = false; return; }
+      const mv = aiPick(aiSide);
+      aiThinking = false;
+      if (!mv) { return; }            // 둘 곳 없음(무승부 상황) — (b)에서 처리
+      const [r, c] = mv;
+      board[r][c] = turn;
+      moveLog.push({ r, c, side: turn });
+      if (checkWin(r, c, turn)) {
+        render(); renderMovelog(); endGame(turn);
+        return;
+      }
+      turn = (turn === BLACK) ? WHITE : BLACK;
+      render(); updateStatus(); renderMovelog();
+    }, 350);
+  }
+
   // ── 무르기 ─────────────────────────────────────────────
   function undo() {
     if (!moveLog.length) return;
-    const last = moveLog.pop();
-    board[last.r][last.c] = null;
-    turn = last.side;
+    if (aiThinking) return;   // AI 계산 중엔 무르기 잠금
+    function pop1() {
+      const last = moveLog.pop();
+      board[last.r][last.c] = null;
+      turn = last.side;
+    }
+    pop1();
+    // AI 대전 중이면 한 번 더 물러 '사람 차례'로 되돌린다.
+    // (마지막이 AI 수일 때 사람 수까지 함께 취소 → 같은 국면서 다시 두게)
+    if (aiSide && moveLog.length && turn === aiSide) pop1();
     gameOver = false;
     winOverlay.classList.remove('show');
     render(); updateStatus(); renderMovelog();
@@ -431,7 +607,13 @@
     turnSuffix.textContent = t('turnSuffix');
     status.classList.toggle('turn-black', isBlack);
     status.classList.toggle('turn-white', !isBlack);
-    msg.textContent = t('pickMsg');
+    // AI 차례(계산 중 포함)면 "생각 중" 톤, 아니면 평소 안내.
+    // ★ (c)에서 'thinking' i18n 키 7개 언어로 정식 추가 예정. 지금은 임시.
+    if (aiSide && turn === aiSide) {
+      msg.textContent = (lang === 'ko') ? '두는 중…' : '…';
+    } else {
+      msg.textContent = t('pickMsg');
+    }
   }
 
   // ── 언어 전환 (장기 setLang 패턴) ───────────────────────

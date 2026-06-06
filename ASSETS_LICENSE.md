@@ -32,25 +32,38 @@ license, the assets are **not** covered by that license.
 
 ## 2. Sound Assets (Third Party, Attributed)
 
-The sound effects under `assets/sound/` are **not** created by Hanrim. They were
-derived from the Pixabay sound pack "Board Game Pieces" by editing and splitting
-it, and are attributed below.
+The sound effects under `assets/sound/` are **not** created by Hanrim. They come
+from three Pixabay sources, attributed below.
+
+### 2a. Move / pick sounds — `omok_sfx_move`, `omok_sfx_pick`
 
 - Title: Board Game Pieces
 - Original author: taure (Freesound)
 - Distributed via: Pixabay (Pixabay Content License); uploader: freesound_community
 - Source: https://pixabay.com/sound-effects/board-game-pieces-59039/
-- Processing: the original sound pack was edited and split into separate sound effects
+- Processing: the original sound pack was edited and split; two of the resulting effects (`omok_sfx_move`, `omok_sfx_pick`) are used in this project
 
 > Sound Effect by [freesound_community](https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=59039) from [Pixabay](https://pixabay.com/sound-effects/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=59039)
 
+### 2b. Victory sound — `omok_sfx_win`
+
+- Distributed via: Pixabay (Pixabay Content License)
+
+> Sound Effect by [Sarah H](https://pixabay.com/users/astralsynthesizer-50776509/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=358765) from [Pixabay](https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=358765)
+
+### 2c. Defeat sound — `omok_sfx_lose`
+
+- Distributed via: Pixabay (Pixabay Content License)
+
+> Sound Effect by [Universfield](https://pixabay.com/users/universfield-28281460/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=250960) from [Pixabay](https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=250960)
+
 The Pixabay Content License permits free use, modification, and adaptation into
 new works, and does not require attribution — though credit is given here out of
-respect for the original author and for transparency. (The license prohibits
+respect for the original authors and for transparency. (The license prohibits
 selling or distributing content on a *standalone* basis with no creative effort
-applied; this project edited and split the sound pack and integrated it into the
-game, so that prohibition does not apply.) These sound assets are **not** subject
-to the All Rights Reserved terms of the visual assets above.
+applied; this project edited/integrated the sounds into the game, so that
+prohibition does not apply.) These sound assets are **not** subject to the All
+Rights Reserved terms of the visual assets above.
 
 ## Note
 
