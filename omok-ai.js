@@ -11,7 +11,7 @@ const SIZE = 15, WIN = 5;
 const BLACK = 'black', WHITE = 'white';
 const DIRS = [[0, 1], [1, 0], [1, 1], [1, -1]];
 const AI_RADIUS = 2;
-const SEARCH_DEPTH = 2, SEARCH_WIDTH = 12, WIN_SCORE = 10000000;
+const SEARCH_DEPTH = 4, SEARCH_WIDTH = 12, WIN_SCORE = 10000000;
 // 이중위협 보너스 [SYNC with script.js]
 const TH_OPEN4 = 30000, TH_CLOSE4 = 12000, TH_OPEN3 = 5000, TH_DBL3 = 50000, TH_MULTI4 = 80000;
 

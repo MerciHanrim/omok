@@ -45,6 +45,29 @@ function evalAfter(coord, side, viewSide) {
   b[r][c] = prev;
   return v;
 }
+// 백이 whiteMv를 둔 뒤, 흑이 한 수로 '열린3 2개(이중위협)'를 만들 자리가
+// 남아있지 않으면 true(=유효 방어). 현재 보드를 변경했다가 되돌린다.
+function whiteBreaksDouble(whiteMv) {
+  if (!whiteMv) return false;
+  const { lineInfo, isOpenThree, DIRS, genCandidates } = E;
+  const b = _getBoard();
+  const [wr, wc] = whiteMv;
+  b[wr][wc] = WHITE;
+  let stillDouble = false;
+  for (const [r, c] of genCandidates()) {
+    if (b[r][c]) continue;
+    b[r][c] = BLACK;
+    let cnt = 0;
+    for (const [dr, dc] of DIRS) {
+      const inf = lineInfo(r, c, dr, dc, BLACK);
+      if (inf.len === 3 && inf.openEnds === 2 && isOpenThree(r, c, dr, dc, BLACK)) cnt++;
+    }
+    b[r][c] = null;
+    if (cnt >= 2) { stillDouble = true; break; }
+  }
+  b[wr][wc] = null;
+  return !stillDouble;
+}
 
 /* ── 그룹 1: 평가함수 — 위협을 점수로 옳게 보는가 ───────────── */
 function group_eval() {
@@ -109,8 +132,28 @@ function group_regression() {
   const first = pickName(aiPickDepth, WHITE);
   ok(first === 'H8', `3-1 빈 판 첫 수 = 천원 H8 → ${first}`);
   setBoard(['F8', 'G8', 'H6', 'H7'], ['B2']);
-  const a = pickName(aiPick, WHITE), b = pickName(aiPickDepth, WHITE);
-  ok(a === 'H8' && b === 'H8', `3-2 순수 이중위협 교점 방어 (a=${a}, b=${b})`);
+  // 깊이가 깊어지면 미니맥스가 교점(H8)이 아닌 등가 방어(끝막기 H5 등)를
+  // 고를 수 있다 — 둘 다 흑 이중위협을 깨면 정답. 좌표 고정 대신 '방어 성공'을 본다.
+  const bMv = aiPickDepth(WHITE);
+  const bName = bMv ? name(bMv[0], bMv[1]) : '(none)';
+  const breaksDouble = whiteBreaksDouble(bMv);
+  ok(breaksDouble, `3-2 (b) 이중위협 유효 방어 (선택=${bName}, 위협 깨짐=${breaksDouble})`);
+}
+
+/* ── 그룹 4: 실기 회귀 — 후수 백에게 진 기보의 패배 지점 ──────────
+   무르기 없이 명인(흑·선공)이 후수(백)에게 진 실제 기보(2026-06-07).
+   패인: 12수 흑 차례에 명인이 K6을 둬 백 대각 이중위협
+     G6-H7-I8-J9-K10을 허용 → 13수에 백 즉승 2개(F5,K10)로 패배.
+   측정: 깊이 2는 K6(패배수), 깊이 3부터 I9(대각 차단). → SEARCH_DEPTH=4 근거. */
+function group_realgame_regression() {
+  console.log('\n[그룹 4] 실기 회귀 — 대각 이중위협 방어 (depth 검증선)');
+  const blacks11 = ['H8','G9','F7','F8','E7','F6','G7','I6','D11','H6','L7'];
+  const whites11 = ['H9','G8','I7','I8','H10','F9','H7','E10','J7','K7','G6'];
+  setBoard(blacks11, whites11);
+  const mv = aiPickDepth(BLACK);
+  const got = mv ? name(mv[0], mv[1]) : '(none)';
+  ok(got !== 'K6', `4-1 master 12수: 패배수 K6 회피 → ${got}`);
+  ok(got === 'I9', `4-2 master 12수: 대각 이중위협 차단 I9 선택 → ${got}`);
 }
 
 console.log('======================================================');
@@ -119,6 +162,7 @@ console.log('======================================================');
 group_eval();
 group_minimax();
 group_regression();
+group_realgame_regression();
 console.log('\n------------------------------------------------------');
 console.log(` 결과: ${pass} PASS / ${fail} FAIL  (총 ${pass + fail})`);
 console.log('------------------------------------------------------');
