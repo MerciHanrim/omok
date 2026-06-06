@@ -34,6 +34,7 @@
       themeSansu: '산수화', themeWood: '원목', themeSipjang: '십장생', themePaper: '한지',
       black: '흑', white: '백', turnSuffix: '차례',
       pickMsg: '빈 자리를 눌러 돌을 놓으세요',
+      aiThinking: '컴퓨터가 수를 고르고 있습니다…',
       undo: '무르기', reset: '처음부터',
       movelogTitle: '기 보', movelogEmpty: '아직 둔 수가 없습니다',
       win: (s) => `${s} 승리`,
@@ -79,6 +80,7 @@
       themeSansu: 'Landscape', themeWood: 'Wood', themeSipjang: 'Sipjangsaeng', themePaper: 'Hanji',
       black: 'Black', white: 'White', turnSuffix: 'to move',
       pickMsg: 'Tap an empty point to place a stone',
+      aiThinking: 'The computer is choosing a move…',
       undo: 'Undo', reset: 'Restart',
       movelogTitle: 'Moves', movelogEmpty: 'No moves yet',
       win: (s) => `${s} wins`,
@@ -123,6 +125,7 @@
       themeSansu: '山水画', themeWood: '原木', themeSipjang: '十长生', themePaper: '韩纸',
       black: '黑', white: '白', turnSuffix: '行棋',
       pickMsg: '点击空交叉点落子',
+      aiThinking: '电脑正在思考落子…',
       undo: '悔棋', reset: '重新开始',
       movelogTitle: '棋 谱', movelogEmpty: '尚无棋步',
       win: (s) => `${s}方胜`,
@@ -167,6 +170,7 @@
       themeSansu: '山水畫', themeWood: '原木', themeSipjang: '十長生', themePaper: '韓紙',
       black: '黑', white: '白', turnSuffix: '行棋',
       pickMsg: '點擊空交叉點落子',
+      aiThinking: '電腦正在思考落子…',
       undo: '悔棋', reset: '重新開始',
       movelogTitle: '棋 譜', movelogEmpty: '尚無棋步',
       win: (s) => `${s}方勝`,
@@ -211,6 +215,7 @@
       themeSansu: '山水画', themeWood: '木目', themeSipjang: '十長生', themePaper: '韓紙',
       black: '黒', white: '白', turnSuffix: 'の番',
       pickMsg: '空いた交点を押して石を置きます',
+      aiThinking: 'コンピューターが手を考えています…',
       undo: '待った', reset: '最初から',
       movelogTitle: '棋 譜', movelogEmpty: 'まだ手がありません',
       win: (s) => `${s}の勝ち`,
@@ -255,6 +260,7 @@
       themeSansu: 'Landschaft', themeWood: 'Holz', themeSipjang: 'Sipjangsaeng', themePaper: 'Hanji',
       black: 'Schwarz', white: 'Weiß', turnSuffix: 'am Zug',
       pickMsg: 'Tippe auf einen leeren Punkt, um zu setzen',
+      aiThinking: 'Der Computer überlegt seinen Zug …',
       undo: 'Zurück', reset: 'Neu starten',
       movelogTitle: 'Züge', movelogEmpty: 'Noch keine Züge',
       win: (s) => `${s} gewinnt`,
@@ -299,6 +305,7 @@
       themeSansu: 'Paysage', themeWood: 'Bois', themeSipjang: 'Sipjangsaeng', themePaper: 'Hanji',
       black: 'Noir', white: 'Blanc', turnSuffix: 'au trait',
       pickMsg: 'Touchez un point vide pour poser une pierre',
+      aiThinking: 'L’ordinateur réfléchit à son coup…',
       undo: 'Annuler', reset: 'Recommencer',
       movelogTitle: 'Coups', movelogEmpty: 'Aucun coup pour l’instant',
       win: (s) => `${s} gagne`,
@@ -400,6 +407,25 @@
   //    파라미터 없으면 → 메인 메뉴 표시(정식 흐름).
   let aiSide = null;       // BLACK / WHITE / null(2인)
   let aiThinking = false;  // AI 계산 중 사람 입력·중복 트리거 방지 플래그
+
+  /* ── AI '생각 호흡' 프리셋 (난이도별 think 시간) ──────────────
+     ★ 핵심: 계산 시간과 연출 시간을 분리한다(아래 aiMove 참조).
+       오목 AI는 (a) 단계에선 계산이 매우 빨라(수 ms) 그냥 두면 돌이
+       기계처럼 툭 튀어나온다. 그래서 매 수마다 thinkMin~thinkMax 사이
+       무작위 '호흡 시간'을 목표로 잡고, 실제 계산에 쓴 시간을 뺀
+       나머지만큼만 더 기다렸다가 착수한다(빠르면 호흡 채우고, 느리면
+       호흡 안에 흡수). 장기의 think 호흡 철학(thinkMin/Max)을 계승.
+     ★ 5단계(blunder 난이도) 연결 자리: 지금은 master만 쓰지만 4단계를
+       미리 박아둔다. chooseLevel(id)에서 `aiLevel = id` 한 줄만 더하면
+       난이도별로 호흡이 달라진다(초심자=짧게 … 명인=가장 차분하게).
+       단위는 ms. measure not guess — 체감 보고 숫자만 조정. */
+  const AI_LEVELS = {
+    beginner: { thinkMin: 250, thinkMax: 550 },  // 🌱 짧게 — 망설임 적게
+    friend:   { thinkMin: 350, thinkMax: 700 },  // 🍃 보통
+    seasoned: { thinkMin: 400, thinkMax: 800 },  // 🎋 조금 길게
+    master:   { thinkMin: 450, thinkMax: 900 },  // 🏮 가장 차분하게
+  };
+  let aiLevel = 'master';  // 현재 단일 강도. (5단계 chooseLevel에서 세팅)
   let useMenu = true;      // 메뉴로 진입하는가 (URL 파라미터 있으면 false)
   (function readAiParam() {
     const params = new URLSearchParams(location.search);
@@ -753,17 +779,36 @@
     return best;
   }
 
-  // AI 착수 실행 — 사람 onPlace와 같은 경로를 타되, 차례·종료를 직접 처리.
-  // setTimeout으로 살짝 늦춰 "두는 느낌" + 렌더 반영 시간 확보.
+  // ★ AI '생각 호흡' — 계산 시간과 연출 시간을 분리한다.
+  //   흐름: 차례 시작 → 상태창 "생각 중" + 입력 잠금
+  //        → 실제 계산(aiPick, 매우 빠름) → 계산에 쓴 시간 측정
+  //        → 목표 호흡(thinkMin~thinkMax 랜덤)에서 경과분을 뺀 나머지만 더 대기
+  //        → 착수 → 상태창 복귀.
+  //   이렇게 하면 ① 빨리 계산돼도 최소 호흡(thinkMin) 보장 → 기계처럼 안 튐
+  //             ② (b) 미니맥스로 계산이 느려져도 호흡 안에 흡수 → 이중 지연 없음.
+  //   ★ aiThinking 플래그는 호흡이 끝날 때까지 유지(이 동안 사람 입력·무르기 잠금).
   function aiMove() {
     if (gameOver || turn !== aiSide) return;
     aiThinking = true;
-    updateStatus();   // "두는 중" 표시(아래 updateStatus에서 분기)
+    updateStatus();   // "컴퓨터가 수를 고르고 있습니다…" (updateStatus에서 분기)
+
+    // 1) 이번 수의 목표 호흡 시간(난이도 프리셋에서 무작위)
+    const lv = AI_LEVELS[aiLevel] || AI_LEVELS.master;
+    const targetDelay = lv.thinkMin + Math.random() * (lv.thinkMax - lv.thinkMin);
+
+    // 2) 실제 계산을 먼저 끝내고, 거기 쓴 시간을 잰다.
+    //    (계산은 동기지만 호흡 시작 시점을 기준으로 경과를 측정한다.)
+    const startedAt = performance.now();
+    const mv = aiPick(aiSide);
+    const computeMs = performance.now() - startedAt;
+
+    // 3) 남은 호흡만큼만 더 기다렸다가 착수(계산이 호흡보다 길었으면 즉시).
+    const remaining = Math.max(0, targetDelay - computeMs);
     setTimeout(() => {
+      // 대기 중 게임 상태가 바뀌었으면(무르기·재시작 등) 착수 취소.
       if (gameOver || turn !== aiSide) { aiThinking = false; return; }
-      const mv = aiPick(aiSide);
       aiThinking = false;
-      if (!mv) { return; }            // 둘 곳 없음(무승부 상황) — (b)에서 처리
+      if (!mv) { updateStatus(); return; }  // 둘 곳 없음 — (b)에서 무승부 처리
       const [r, c] = mv;
       board[r][c] = turn;
       moveLog.push({ r, c, side: turn });
@@ -774,7 +819,7 @@
       }
       turn = (turn === BLACK) ? WHITE : BLACK;
       render(); updateStatus(); renderMovelog();
-    }, 350);
+    }, remaining);
   }
 
   // ── 무르기 ─────────────────────────────────────────────
@@ -837,10 +882,9 @@
     turnSuffix.textContent = t('turnSuffix');
     status.classList.toggle('turn-black', isBlack);
     status.classList.toggle('turn-white', !isBlack);
-    // AI 차례(계산 중 포함)면 "생각 중" 톤, 아니면 평소 안내.
-    // ★ (c)에서 'thinking' i18n 키 7개 언어로 정식 추가 예정. 지금은 임시.
+    // AI 차례(생각 호흡 중 포함)면 "생각 중" 안내, 아니면 평소 착수 안내.
     if (aiSide && turn === aiSide) {
-      msg.textContent = (lang === 'ko') ? '두는 중…' : '…';
+      msg.textContent = t('aiThinking');
     } else {
       msg.textContent = t('pickMsg');
     }
@@ -1050,7 +1094,9 @@
   function chooseLevel(id, cardEl) {
     if (levelPicking) return;
     levelPicking = true;
-    // (5단계에서 id별 blunder 연결. 지금은 명인 단일 강도라 강도 분기 없음.)
+    // 선택한 난이도를 AI 상태에 반영. 지금은 think 호흡만 난이도별로 갈리고,
+    // 강도(blunder)는 5단계에서 여기 같은 자리에 연결한다(active:true 전환과 함께).
+    aiLevel = id;
     for (const c of levelGrid.children) c.classList.remove('current');
     if (cardEl) cardEl.classList.add('current');
     setTimeout(() => { levelPicking = false; showSideStep(); }, 420);
