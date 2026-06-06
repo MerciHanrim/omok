@@ -779,6 +779,247 @@
     return best;
   }
 
+  /* ============================================================
+     ── AI 대전 엔진 — 4단계 (b): 알파베타 미니맥스 깊이 확장 ──────
+     (a)의 약점: aiPick은 각 후보를 '한 수'로만 평가해서
+       (내 공격 + 상대 위협×0.9) 최고점을 고른다. 그래서 상대가
+       "이번 수는 위협이 아니지만 다음 수에 열린3 두 개가 동시에
+       열리는" 자리를 두면 막을 이유를 못 본다 = 이중위협에 뚫림.
+       (한림이 명인을 이긴 그 판이 바로 이 구멍을 찔렀다.)
+
+     (b)의 해법: 평가함수(scoreLine/lineInfo)는 그대로 두고,
+       그 위에 알파베타 탐색 한 겹만 얹는다. 한 수가 아니라
+       '내가 두고 → 상대가 최선으로 응수하고 → 내가 또 두는'
+       수읽기를 하므로, 한 수 뒤에 터지는 이중위협도 보인다.
+
+     설계:
+       1) evalBoard(side)  : 보드 전체를 side 관점 점수로(내 라인합 − 상대 라인합).
+                             미니맥스 리프 평가. scoreLine/lineInfo 재사용.
+       2) hasFiveOnBoard() : 현재 보드에 5목이 있나(탐색 중 종료 판정).
+       3) orderedCands(side): genCandidates를 evalMove(공+수)로 정렬, 상위 N개만
+                             (이동순서 — 알파베타 가지치기 효율 ↑, 분기 ↓).
+       4) alphabeta(...)   : 음의 미니맥스 + 알파베타. 깊이 0이면 evalBoard.
+       5) aiPickDepth(side): 새 진입점. ①즉승 ②상대즉승차단은 (a)처럼 즉시 처리
+                             (탐색 낭비 방지), 나머지를 깊이 SEARCH_DEPTH로 탐색.
+     ★ 호흡(aiMove)은 손대지 않는다 — aiPick 자리만 aiPickDepth로 바꾸면
+       실제 계산이 길어져도 thinkMax 안에 흡수된다(설계상 이미 그렇게 돼 있음).
+     ============================================================ */
+
+  // 탐색 깊이. 2 = "내 수 → 상대 응수" 2겹(이중위협 인식의 최소선).
+  // 3~4로 올리면 더 강하나 분기 폭증 → 측정하며 조정. measure not guess.
+  const SEARCH_DEPTH = 2;
+  // 각 노드에서 탐색할 후보 상한(이동순서 상위 N). 오목 분기 억제 핵심.
+  const SEARCH_WIDTH = 12;
+  // evalBoard에서 5목은 압도적 큰 값으로(탐색 종료선 명확화).
+  const WIN_SCORE = 10000000;
+
+  /* ── 이중위협(threat) 보너스 — (b) 핵심 보강 ──────────────────
+     문제: 깊이 2~6 알파베타로도 백이 자기 공격에 몰입해 상대의
+       '다음 한 수로 완성되는 이중위협'을 방치했다(측정으로 확인).
+       원인은 깊이가 아니라 평가 기준 — 놓인 돌의 라인 점수는 보는데
+       '곧 만들 수 있는 위협 개수'를 점수로 못 봤다.
+     해법: evalBoard에 "이 색이 지금 한 수로 만들 수 있는 위협 자리"를
+       종류별로 세서 가산. 오목은 5목·열린4·이중위협이 사실상 전부라
+       이 인식이 곧 핵심 규칙이다.
+     ★ 값은 보수적으로 시작(한림 결정). 과하게 공격적이면 낮춘다.
+       위계: 즉승/즉패차단 > 다중4 > 열린4 > 이중 열린3 > 닫힌4 > 열린3. */
+  const TH_OPEN4   = 30000;  // 열린4 만드는 자리 1개당
+  const TH_CLOSE4  = 12000;  // 닫힌4(선수 위협) 자리 1개당
+  const TH_OPEN3   = 5000;   // 열린3 자리 1개당 (라인점수 5000과 동급 — 후보)
+  const TH_DBL3    = 50000;  // 열린3 자리 2개 이상 → 추가(게임 방향을 바꾸는 위협)
+  const TH_MULTI4  = 80000;  // 4류(열린4/닫힌4) 포함 다중 threat → 추가
+
+  // 보드 전체를 side 관점에서 평가: (내 모든 라인 점수) − (상대 모든 라인 점수).
+  // 한 칸 단위 evalMove와 달리, 놓인 모든 돌의 4방향 라인을 합산한다.
+  // 같은 라인을 양끝 돌에서 중복 계산하지 않도록 '라인 시작점'에서만 센다
+  //   (이전 칸이 같은 색이면 그 라인은 이미 셈 → 건너뜀).
+  function evalBoardOneSide(side) {
+    let s = 0;
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        if (board[r][c] !== side) continue;
+        for (const [dr, dc] of DIRS) {
+          const pr = r - dr, pc = c - dc;
+          // 라인 시작점에서만 계산(앞 칸이 같은 색이면 중복 → skip)
+          if (inB(pr, pc) && board[pr][pc] === side) continue;
+          // 이 시작점에서 연속 길이 + 양끝 열림 측정
+          let len = 1, rr = r + dr, cc = c + dc;
+          while (inB(rr, cc) && board[rr][cc] === side) { len++; rr += dr; cc += dc; }
+          const endFwd = inB(rr, cc) && board[rr][cc] === null;
+          const br = r - dr, bc = c - dc;
+          const endBack = inB(br, bc) && board[br][bc] === null;
+          const openEnds = (endFwd ? 1 : 0) + (endBack ? 1 : 0);
+          s += scoreLine(len, openEnds);
+        }
+      }
+    }
+    return s;
+  }
+  function evalBoard(side) {
+    const opp = (side === BLACK) ? WHITE : BLACK;
+    return (evalBoardOneSide(side) + threatBonus(side))
+         - (evalBoardOneSide(opp)  + threatBonus(opp));
+  }
+
+  // ★ side가 '지금 한 수로 만들 수 있는 위협 자리'를 종류별로 세서 보너스 점수.
+  //   genCandidates 범위(돌 주변 빈칸)만 본다 — 멀리 떨어진 빈칸은 위협 불가.
+  //   한 자리가 열린4/닫힌4/열린3 중 무엇을 만드는지 4방향 중 '최고 등급'으로 분류.
+  //   흑+renju면 금수 자리는 둘 수 없으니 위협으로 세지 않는다.
+  //   ※ 부작용 없음: 가상 착수 후 반드시 되돌린다.
+  function threatBonus(side) {
+    let open4 = 0, close4 = 0, open3 = 0;
+    const cands = genCandidates();
+    for (const [r, c] of cands) {
+      if (side === BLACK && renjuMode && isForbiddenMove(r, c, BLACK)) continue;
+      board[r][c] = side;
+      // 이 자리가 즉시 5목이면 위협 보너스 대상이 아님(승부는 5목 점수가 처리)
+      let isFive = false, best = 0;  // best: 3=열린4, 2=닫힌4, 1=열린3
+      for (const [dr, dc] of DIRS) {
+        const info = lineInfo(r, c, dr, dc, side);
+        if (info.len >= WIN) { isFive = true; break; }
+        if (info.len === 4) {
+          if (info.openEnds === 2) best = Math.max(best, 3);
+          else if (info.openEnds === 1) best = Math.max(best, 2);
+        } else if (info.len === 3 && info.openEnds === 2) {
+          // 진짜 열린3인지(한 수 더 두면 열린4) 확인 — isOpenThree 재사용
+          if (isOpenThree(r, c, dr, dc, side)) best = Math.max(best, 1);
+        }
+      }
+      board[r][c] = null;
+      if (isFive) continue;
+      if (best === 3) open4++;
+      else if (best === 2) close4++;
+      else if (best === 1) open3++;
+    }
+    let bonus = open4 * TH_OPEN4 + close4 * TH_CLOSE4 + open3 * TH_OPEN3;
+    // 다중 위협 가산: 4류가 둘 이상이거나 4류+3류면 강력(상대가 한 번에 못 막음).
+    const fours = open4 + close4;
+    if (fours >= 2 || (fours >= 1 && open3 >= 1)) bonus += TH_MULTI4;
+    // 열린3 2개 이상(4류 없이도) — 전형적 쌍삼 위협.
+    else if (open3 >= 2) bonus += TH_DBL3;
+    return bonus;
+  }
+
+  // 현재 보드에 5목(이상)이 있으면 그 색을 반환, 없으면 null.
+  function fiveOnBoard() {
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        const side = board[r][c];
+        if (!side) continue;
+        for (const [dr, dc] of DIRS) {
+          const pr = r - dr, pc = c - dc;
+          if (inB(pr, pc) && board[pr][pc] === side) continue;
+          let len = 1, rr = r + dr, cc = c + dc;
+          while (inB(rr, cc) && board[rr][cc] === side) { len++; rr += dr; cc += dc; }
+          if (len >= WIN) return side;
+        }
+      }
+    }
+    return null;
+  }
+
+  // 후보를 이동순서로 정렬해 상위 N개만. side가 둘 차례라는 전제.
+  // 점수: evalMove(공격) + evalMove(상대 같은 자리 위협). 큰 순.
+  // 흑+renju면 금수 자리 제외(둘 수 없으니 탐색에서도 뺀다).
+  function orderedCands(side, width) {
+    const opp = (side === BLACK) ? WHITE : BLACK;
+    let cands = genCandidates();
+    if (side === BLACK && renjuMode) {
+      cands = cands.filter(([r, c]) => !isForbiddenMove(r, c, BLACK));
+    }
+    const scored = cands.map(([r, c]) => {
+      const atk = evalMove(r, c, side);
+      const def = evalMove(r, c, opp);
+      return { r, c, key: atk + def };
+    });
+    scored.sort((a, b) => b.key - a.key);
+    const lim = width || SEARCH_WIDTH;
+    return scored.slice(0, lim).map(o => [o.r, o.c]);
+  }
+
+  // 음의 미니맥스 + 알파베타. toMove가 둘 차례. rootSide 관점 점수를 반환.
+  //   depth==0 또는 5목 종료면 evalBoard(rootSide).
+  // ★ 부작용 없음: board에 두고 재귀 후 반드시 되돌린다.
+  function alphabeta(toMove, rootSide, depth, alpha, beta) {
+    const five = fiveOnBoard();
+    if (five) {
+      // 이미 누군가 5목 — rootSide가 이겼으면 +, 졌으면 −. 빨리 이길수록 가치↑.
+      const sign = (five === rootSide) ? 1 : -1;
+      return sign * (WIN_SCORE + depth);   // depth 큰(=빨리 난) 승리 선호
+    }
+    if (depth === 0) return evalBoard(rootSide);
+
+    const cands = orderedCands(toMove, SEARCH_WIDTH);
+    if (!cands.length) return evalBoard(rootSide);
+
+    const next = (toMove === BLACK) ? WHITE : BLACK;
+    const maximizing = (toMove === rootSide);
+    let best = maximizing ? -Infinity : Infinity;
+
+    for (const [r, c] of cands) {
+      board[r][c] = toMove;
+      // 방금 둔 수로 5목이면 즉시 종료값(불필요한 재귀 차단)
+      let val;
+      if (checkWin(r, c, toMove)) {
+        const sign = (toMove === rootSide) ? 1 : -1;
+        val = sign * (WIN_SCORE + depth);
+      } else {
+        val = alphabeta(next, rootSide, depth - 1, alpha, beta);
+      }
+      board[r][c] = null;
+
+      if (maximizing) {
+        if (val > best) best = val;
+        if (best > alpha) alpha = best;
+      } else {
+        if (val < best) best = val;
+        if (best < beta) beta = best;
+      }
+      if (beta <= alpha) break;   // 가지치기
+    }
+    return best;
+  }
+
+  // ★ (b) AI 진입점 — 깊이 탐색으로 한 수 선택.
+  //   ① 즉승 ② 상대 즉승 차단은 (a)처럼 즉시 처리(탐색 낭비 방지).
+  //   그 외에는 후보마다 두고 alphabeta로 평가해 최고점.
+  function aiPickDepth(side) {
+    const opp = (side === BLACK) ? WHITE : BLACK;
+    let cands = genCandidates();
+    if (side === BLACK && renjuMode) {
+      cands = cands.filter(([r, c]) => !isForbiddenMove(r, c, BLACK));
+    }
+    if (!cands.length) return null;
+
+    // ① 즉승 — 그 자리에서 바로 5목
+    for (const [r, c] of cands) {
+      if (isWinningMove(r, c, side)) return [r, c];
+    }
+    // ② 상대 즉승 차단 — 상대가 다음에 5목 낼 자리를 선점
+    for (const [r, c] of cands) {
+      if (isWinningMove(r, c, opp)) return [r, c];
+    }
+
+    // ③ 깊이 탐색. 이동순서 상위 후보만 루트에서 평가.
+    const ordered = orderedCands(side, SEARCH_WIDTH);
+    if (!ordered.length) return aiPick(side);   // 안전 폴백
+
+    const next = (side === BLACK) ? WHITE : BLACK;
+    let best = null, bestScore = -Infinity;
+    for (const [r, c] of ordered) {
+      board[r][c] = side;
+      let val;
+      if (checkWin(r, c, side)) {
+        val = WIN_SCORE + SEARCH_DEPTH;
+      } else {
+        val = alphabeta(next, side, SEARCH_DEPTH - 1, -Infinity, Infinity);
+      }
+      board[r][c] = null;
+      if (val > bestScore) { bestScore = val; best = [r, c]; }
+    }
+    return best || aiPick(side);
+  }
+
   // ★ AI '생각 호흡' — 계산 시간과 연출 시간을 분리한다.
   //   흐름: 차례 시작 → 상태창 "생각 중" + 입력 잠금
   //        → 실제 계산(aiPick, 매우 빠름) → 계산에 쓴 시간 측정
@@ -799,7 +1040,7 @@
     // 2) 실제 계산을 먼저 끝내고, 거기 쓴 시간을 잰다.
     //    (계산은 동기지만 호흡 시작 시점을 기준으로 경과를 측정한다.)
     const startedAt = performance.now();
-    const mv = aiPick(aiSide);
+    const mv = aiPickDepth(aiSide);   // (b) 깊이 탐색. (a) aiPick은 폴백·blunder용으로 유지.
     const computeMs = performance.now() - startedAt;
 
     // 3) 남은 호흡만큼만 더 기다렸다가 착수(계산이 호흡보다 길었으면 즉시).
