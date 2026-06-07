@@ -419,16 +419,19 @@
        미리 박아둔다. chooseLevel(id)에서 `aiLevel = id` 한 줄만 더하면
        난이도별로 호흡이 달라진다(초심자=짧게 … 명인=가장 차분하게).
        단위는 ms. measure not guess — 체감 보고 숫자만 조정. */
-  // 난이도별 프리셋: think 호흡(ms) + blunder 확률.
-  // ★ blunder = '최선 수읽기를 포기하고 무작위 후보를 두는' 확률(5단계).
+  // 난이도별 프리셋: think 호흡(ms) + blunder 확률 + blunder 윈도우.
+  // ★ blunder = '최선(1등)을 포기하고 차선책을 두는' 확률(5단계).
   //   단 즉승/즉패차단은 blunder와 무관하게 항상 유지(aiPickDepth ①②).
-  //   blunder ≠ 즉승/즉패도 모르는 바보. 값은 장기 난이도 인격 계승.
-  //   호흡은 약할수록 짧게(망설임 적게), 명인이 가장 차분.
+  //   ★ 차선책 방식: 완전 무작위가 아니라 orderedCands(평가·정렬된 후보)의
+  //     지정 구간 window=[lo,hi](0-기반, hi 포함)에서 무작위로 고른다.
+  //     이래야 '판 흐름 안의 헐거운 수'가 되고, 전선 밖 외딴 착수(M4 같은)가
+  //     안 나온다 — "약하다 ≠ 고장났다". (한림 결정)
+  //   값/윈도우는 장기 난이도 인격 + 실기 진단 계승.
   const AI_LEVELS = {
-    beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.20 },  // 🌱 자주 실수
-    friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.10 },  // 🍃 가끔 실수
-    seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.05 },  // 🎋 드물게 실수
-    master:   { thinkMin: 450, thinkMax: 900, blunder: 0    },  // 🏮 빈틈 없음
+    beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.20, window: [2, 9] },  // 🌱 3~10위
+    friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.10, window: [1, 6] },  // 🍃 2~7위
+    seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.05, window: [1, 3] },  // 🎋 2~4위
+    master:   { thinkMin: 450, thinkMax: 900, blunder: 0,    window: null   },  // 🏮 1등 고정
   };
   let aiLevel = 'master';  // chooseLevel(id)에서 세팅. 기본 명인.
   let useMenu = true;      // 메뉴로 진입하는가 (URL 파라미터 있으면 false)
@@ -1010,19 +1013,24 @@
       if (isWinningMove(r, c, opp)) return [r, c];
     }
 
-    // ★ blunder 판정 (5단계 난이도) — 최선 수읽기를 포기하고 무작위 착수.
-    //   ①②(즉승/즉패차단)는 위에서 이미 처리됐으니 여기 도달 = 코앞 승부는 없음.
-    //   cands는 genCandidates 범위 + (흑 renju면) 금수 제외 상태라,
-    //   무작위라도 판 근처의 합법수만 고른다(구석 착수·금수 방지).
-    //   명인(blunder 0)이면 이 분기는 절대 안 탄다.
-    const lvl = AI_LEVELS[aiLevel] || AI_LEVELS.master;
-    if (lvl.blunder > 0 && Math.random() < lvl.blunder) {
-      return cands[Math.floor(Math.random() * cands.length)];
-    }
-
-    // ③ 깊이 탐색. 이동순서 상위 후보만 루트에서 평가.
+    // ③ 깊이 탐색용 후보(이동순서로 평가·정렬). blunder도 이걸 재사용.
     const ordered = orderedCands(side, SEARCH_WIDTH);
     if (!ordered.length) return aiPick(side);   // 안전 폴백
+
+    // ★ blunder 판정 (5단계 난이도) — 최선(1등)을 포기하고 '차선책'을 둔다.
+    //   ①②(즉승/즉패차단)는 위에서 처리됐으니 여기 도달 = 코앞 승부는 없음.
+    //   완전 무작위가 아니라 ordered의 윈도우 [lo,hi]에서만 뽑는다 →
+    //   판 흐름 안의 헐거운 수가 되고 전선 밖 외딴 착수가 안 나온다.
+    //   명인(blunder 0)이면 이 분기는 절대 안 탄다.
+    const lvl = AI_LEVELS[aiLevel] || AI_LEVELS.master;
+    if (lvl.blunder > 0 && lvl.window && Math.random() < lvl.blunder) {
+      const lo = Math.min(lvl.window[0], ordered.length - 1);
+      const hi = Math.min(lvl.window[1], ordered.length - 1);
+      if (hi >= lo) {
+        const pick = lo + Math.floor(Math.random() * (hi - lo + 1));
+        return ordered[pick];
+      }
+    }
 
     const next = (side === BLACK) ? WHITE : BLACK;
     let best = null, bestScore = -Infinity;

@@ -19,12 +19,12 @@ const TH_OPEN4 = 30000, TH_CLOSE4 = 12000, TH_OPEN3 = 5000, TH_DBL3 = 50000, TH_
 let board = null;
 let renjuMode = false;
 
-// 난이도 프리셋 + blunder [SYNC with script.js]
+// 난이도 프리셋 + blunder + window(차선책 구간) [SYNC with script.js]
 const AI_LEVELS = {
-  beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.20 },
-  friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.10 },
-  seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.05 },
-  master:   { thinkMin: 450, thinkMax: 900, blunder: 0    },
+  beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.20, window: [2, 9] },
+  friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.10, window: [1, 6] },
+  seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.05, window: [1, 3] },
+  master:   { thinkMin: 450, thinkMax: 900, blunder: 0,    window: null   },
 };
 let aiLevel = 'master';
 
@@ -259,13 +259,15 @@ function aiPickDepth(side) {
   if (!cands.length) return null;
   for (const [r, c] of cands) if (isWinningMove(r, c, side)) return [r, c];
   for (const [r, c] of cands) if (isWinningMove(r, c, opp)) return [r, c];
-  // blunder 판정 [SYNC with script.js] — 즉승/즉패차단 후, 최선탐색 전.
-  const lvl = AI_LEVELS[aiLevel] || AI_LEVELS.master;
-  if (lvl.blunder > 0 && Math.random() < lvl.blunder) {
-    return cands[Math.floor(Math.random() * cands.length)];
-  }
   const ordered = orderedCands(side, SEARCH_WIDTH);
   if (!ordered.length) return aiPick(side);
+  // blunder = 차선책 [SYNC with script.js] — ordered 윈도우에서 무작위.
+  const lvl = AI_LEVELS[aiLevel] || AI_LEVELS.master;
+  if (lvl.blunder > 0 && lvl.window && Math.random() < lvl.blunder) {
+    const lo = Math.min(lvl.window[0], ordered.length - 1);
+    const hi = Math.min(lvl.window[1], ordered.length - 1);
+    if (hi >= lo) return ordered[lo + Math.floor(Math.random() * (hi - lo + 1))];
+  }
   const next = (side === BLACK) ? WHITE : BLACK;
   let best = null, bestScore = -Infinity;
   for (const [r, c] of ordered) {

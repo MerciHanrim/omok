@@ -214,6 +214,25 @@ function group_blunder() {
   }
   ok(differed, `5-5 초심자 blunder 실제 발동(명인 최선=${mName}와 다른 수 관찰)`);
 
+  // 5-6 ★ 차선책 검증: blunder가 발동해도 ordered 윈도우(상위권) 안에서만 뽑는다.
+  //   = 전선 밖 외딴 착수(M4 같은) 방지. 초심자 200회 모두, 둔 수가
+  //   명인 orderedCands 상위 10(윈도우 [2,9] 상한+여유) 안에 드는지 확인.
+  const { orderedCands } = E;
+  _setLevel('master');
+  const board6 = [['H8', 'I7', 'J6', 'G9'], ['H9', 'G7', 'I8']];  // 중반 모양
+  setBoard(board6[0], board6[1]);
+  const top = orderedCands(BLACK, 12).map(([r, c]) => name(r, c));
+  const allowed = new Set(top.slice(0, 10));  // 윈도우 [2,9] = 상위 10 안
+  _setLevel('beginner');
+  let allInWindow = true, sample = '';
+  for (let i = 0; i < 200; i++) {
+    setBoard(board6[0], board6[1]);
+    const m = aiPickDepth(BLACK);
+    const n = m ? name(m[0], m[1]) : '-';
+    if (!allowed.has(n)) { allInWindow = false; sample = n; break; }
+  }
+  ok(allInWindow, `5-6 초심자 blunder도 상위권 내(외딴 착수 방지)${allInWindow ? '' : ` — 벗어남:${sample}`}`);
+
   _setLevel(saved);
 }
 
