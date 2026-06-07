@@ -27,6 +27,7 @@ const AI_LEVELS = {
   master:   { thinkMin: 450, thinkMax: 900, blunder: 0,    window: null   },
 };
 let aiLevel = 'master';
+const BLUNDER_FREE_MOVES = 3;  // [SYNC] AI 자신 착수 3개 이하 동안 blunder 면제
 
 function newBoard() {
   board = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
@@ -262,8 +263,12 @@ function aiPickDepth(side) {
   const ordered = orderedCands(side, SEARCH_WIDTH);
   if (!ordered.length) return aiPick(side);
   // blunder = 차선책 [SYNC with script.js] — ordered 윈도우에서 무작위.
+  //   초반 면제: AI 자신 착수 BLUNDER_FREE_MOVES 이하면 스킵(첫 수 티 방지).
   const lvl = AI_LEVELS[aiLevel] || AI_LEVELS.master;
-  if (lvl.blunder > 0 && lvl.window && Math.random() < lvl.blunder) {
+  let myStones = 0;
+  for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (board[r][c] === side) myStones++;
+  if (myStones >= BLUNDER_FREE_MOVES &&
+      lvl.blunder > 0 && lvl.window && Math.random() < lvl.blunder) {
     const lo = Math.min(lvl.window[0], ordered.length - 1);
     const hi = Math.min(lvl.window[1], ordered.length - 1);
     if (hi >= lo) return ordered[lo + Math.floor(Math.random() * (hi - lo + 1))];

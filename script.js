@@ -434,6 +434,11 @@
     master:   { thinkMin: 450, thinkMax: 900, blunder: 0,    window: null   },  // 🏮 빈틈 없음
   };
   let aiLevel = 'master';  // chooseLevel(id)에서 세팅. 기본 명인.
+  // 초반 blunder 면제: AI(side) 자신의 착수가 이 개수 이하인 동안 blunder 스킵.
+  //   3 = AI의 1·2·3번째 수는 명인 정석, 4번째부터 난이도별 blunder.
+  //   사람도 오목 초반 3수는 크게 안 틀린다 → '첫 수부터 약하게 둔' 티 방지.
+  //   초반은 누가 둬도 천원 근처라 blunder 약화효과도 적다.
+  const BLUNDER_FREE_MOVES = 3;
   let useMenu = true;      // 메뉴로 진입하는가 (URL 파라미터 있으면 false)
   (function readAiParam() {
     const params = new URLSearchParams(location.search);
@@ -1021,9 +1026,14 @@
     //   ①②(즉승/즉패차단)는 위에서 처리됐으니 여기 도달 = 코앞 승부는 없음.
     //   완전 무작위가 아니라 ordered의 윈도우 [lo,hi]에서만 뽑는다 →
     //   판 흐름 안의 헐거운 수가 되고 전선 밖 외딴 착수가 안 나온다.
+    //   ★ 초반 면제: AI 자신의 착수가 BLUNDER_FREE_MOVES 이하면 blunder 스킵.
+    //     AI 첫 3수는 정석(천원 근처), 4번째부터 헐거운 수 → '첫 수 티' 방지.
     //   명인(blunder 0)이면 이 분기는 절대 안 탄다.
     const lvl = AI_LEVELS[aiLevel] || AI_LEVELS.master;
-    if (lvl.blunder > 0 && lvl.window && Math.random() < lvl.blunder) {
+    let myStones = 0;
+    for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (board[r][c] === side) myStones++;
+    if (myStones >= BLUNDER_FREE_MOVES &&
+        lvl.blunder > 0 && lvl.window && Math.random() < lvl.blunder) {
       const lo = Math.min(lvl.window[0], ordered.length - 1);
       const hi = Math.min(lvl.window[1], ordered.length - 1);
       if (hi >= lo) {

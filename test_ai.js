@@ -201,13 +201,15 @@ function group_blunder() {
      `5-4 blunder 위계 초심자(${L.beginner.blunder})>중수(${L.friend.blunder})>고수(${L.seasoned.blunder})>명인(${L.master.blunder})`);
 
   _setLevel('master');
-  setBoard(['H8', 'I8'], ['H9']);
+  // 백 돌 3개 이상이어야 초반 면제(AI 착수<3) 통과 → blunder 가능 구간.
+  const b55 = [['H8', 'I8', 'J8', 'F5'], ['H9', 'I9', 'G6']];  // 백 3개
+  setBoard(b55[0], b55[1]);
   const masterMove = aiPickDepth(WHITE);
   const mName = masterMove ? name(masterMove[0], masterMove[1]) : '-';
   _setLevel('beginner');
   let differed = false;
-  for (let i = 0; i < 200; i++) {
-    setBoard(['H8', 'I8'], ['H9']);
+  for (let i = 0; i < 300; i++) {
+    setBoard(b55[0], b55[1]);
     const m = aiPickDepth(WHITE);
     const n = m ? name(m[0], m[1]) : '-';
     if (n !== mName) { differed = true; break; }
@@ -232,6 +234,22 @@ function group_blunder() {
     if (!allowed.has(n)) { allInWindow = false; sample = n; break; }
   }
   ok(allInWindow, `5-6 초심자 blunder도 상위권 내(외딴 착수 방지)${allInWindow ? '' : ` — 벗어남:${sample}`}`);
+
+  // 5-7 ★ 초반 면제: AI 자신 착수 3 이하면 초심자여도 blunder 안 함.
+  //   흑 H8 하나만 둔 상태에서 백 첫 수(AI 착수 0개) → 200회 모두 명인 최선.
+  _setLevel('master');
+  setBoard(['H8'], []);
+  const firstBest = aiPickDepth(WHITE);
+  const fbName = firstBest ? name(firstBest[0], firstBest[1]) : '-';
+  _setLevel('beginner');
+  let firstAlwaysBest = true, off = '';
+  for (let i = 0; i < 200; i++) {
+    setBoard(['H8'], []);
+    const m = aiPickDepth(WHITE);
+    const n = m ? name(m[0], m[1]) : '-';
+    if (n !== fbName) { firstAlwaysBest = false; off = n; break; }
+  }
+  ok(firstAlwaysBest, `5-7 초반 면제(AI 착수<3) — 백 첫 수 항상 최선 ${fbName}${firstAlwaysBest ? '' : ` (벗어남:${off})`}`);
 
   _setLevel(saved);
 }
