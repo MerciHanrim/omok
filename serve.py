@@ -44,7 +44,7 @@ class COOPCOEPHandler(http.server.SimpleHTTPRequestHandler):
 def main():
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("", PORT), COOPCOEPHandler) as httpd:
-        print(f"장기 로컬 서버 실행 중 → http://localhost:{PORT}")
+        print(f"오목 로컬 서버 실행 중 → http://localhost:{PORT}")
         print("  (COOP/COEP 헤더 적용됨 — SharedArrayBuffer 활성화)")
         print("  끄려면 Ctrl+C")
         try:
