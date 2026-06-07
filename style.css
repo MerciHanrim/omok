@@ -382,11 +382,13 @@ svg.grid { position: absolute; overflow: visible; z-index: 1; }
 }
 .settings-dropdown.open { display: block; animation: fadein 0.15s; }
 .settings-section-label {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: var(--ink-soft);
-  padding: 6px 16px 4px;
-  font-weight: 700;
+  font-family: 'Gowun Batang', var(--cjk-font), serif;
+  padding: 12px 18px 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-read);
+  text-align: center;
 }
 .lang-btn {
   display: block; width: 100%;
@@ -693,7 +695,7 @@ svg.grid { position: absolute; overflow: visible; z-index: 1; }
   color: var(--ink-soft);
   cursor: pointer;
   letter-spacing: 0.04em;
-  text-align: left;
+  text-align: center;
   transition: background 0.12s, color 0.12s;
 }
 .settings-about-link:hover {
