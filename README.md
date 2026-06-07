@@ -13,6 +13,8 @@ porcelain-stone world.
 
 ![Omok — Sansuhwa board](assets/screenshots/omok-screenshot.jpg)
 
+> The Sansuhwa (ink-wash landscape) board with Baekja porcelain stones. Visual assets are All Rights Reserved — see [ASSETS_LICENSE.md](ASSETS_LICENSE.md).
+
 ---
 
 ## Features
