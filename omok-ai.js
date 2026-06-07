@@ -21,9 +21,9 @@ let renjuMode = false;
 
 // 난이도 프리셋 + blunder + window(차선책 구간) [SYNC with script.js]
 const AI_LEVELS = {
-  beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.20, window: [2, 9] },
-  friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.10, window: [1, 6] },
-  seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.05, window: [1, 3] },
+  beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.30, window: [2, 9] },
+  friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.15, window: [1, 6] },
+  seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.07, window: [1, 3] },
   master:   { thinkMin: 450, thinkMax: 900, blunder: 0,    window: null   },
 };
 let aiLevel = 'master';

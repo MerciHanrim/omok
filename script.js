@@ -428,10 +428,10 @@
   //     안 나온다 — "약하다 ≠ 고장났다". (한림 결정)
   //   값/윈도우는 장기 난이도 인격 + 실기 진단 계승.
   const AI_LEVELS = {
-    beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.20, window: [2, 9] },  // 🌱 3~10위
-    friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.10, window: [1, 6] },  // 🍃 2~7위
-    seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.05, window: [1, 3] },  // 🎋 2~4위
-    master:   { thinkMin: 450, thinkMax: 900, blunder: 0,    window: null   },  // 🏮 1등 고정
+    beginner: { thinkMin: 250, thinkMax: 550, blunder: 0.30, window: [2, 9] },  // 🌱 실수 자주
+    friend:   { thinkMin: 350, thinkMax: 700, blunder: 0.15, window: [1, 6] },  // 🍃 가끔 헐거움
+    seasoned: { thinkMin: 400, thinkMax: 800, blunder: 0.07, window: [1, 3] },  // 🎋 드물게 빈틈
+    master:   { thinkMin: 450, thinkMax: 900, blunder: 0,    window: null   },  // 🏮 빈틈 없음
   };
   let aiLevel = 'master';  // chooseLevel(id)에서 세팅. 기본 명인.
   let useMenu = true;      // 메뉴로 진입하는가 (URL 파라미터 있으면 false)
