@@ -36,6 +36,8 @@
       <div class="settings-section-label" id="settingsRuleLabel">룰</div>
       <button id="ruleFree" class="lang-btn rule-btn active">자유룰</button>
       <button id="ruleRenju" class="lang-btn rule-btn">33 금수</button>
+      <div class="settings-divider"></div>
+      <button id="aboutBtn" class="settings-about-link">About / Credits</button>
     </div>
   </div>
 
@@ -120,6 +122,20 @@
       <button class="rules-close" id="rulesClose" aria-label="닫기">✕</button>
     </div>
     <div class="rules-body" id="rulesBody"><!-- renderRules()가 채움 --></div>
+  </div>
+</div>
+
+<!-- About / Credits 오버레이 (설정 메뉴 하단 "소개"에서 열림) — 장기 about-overlay 계승 -->
+<div class="rules-overlay" id="aboutOverlay" style="display:none">
+  <div class="rules-backdrop" id="aboutBackdrop"></div>
+  <div class="rules-panel" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <div class="rules-head">
+      <div class="rules-head-text">
+        <h2 class="rules-title" id="aboutTitle">소개</h2>
+      </div>
+      <button class="rules-close" id="aboutClose" aria-label="닫기">✕</button>
+    </div>
+    <div class="rules-body" id="aboutBody"><!-- renderAbout()가 채움 --></div>
   </div>
 </div>
 

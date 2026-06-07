@@ -73,6 +73,21 @@
         { title: '자유룰', body: '특별한 금지 없이 먼저 다섯을 만들면 이깁니다. 여섯 개 이상(장목)으로도 이길 수 있습니다.' },
         { title: '33 금수 (선택)', body: '흑에게만 적용되는 제약입니다. 한 수로 \'열린 3\'을 둘 이상 동시에 만드는 자리에는 둘 수 없습니다. 백에는 제약이 없습니다.' },
       ],
+      aboutTitle: '소개',
+      aboutClose: '닫기',
+      aboutSourceLabel: '출처 ↗',
+      aboutTagline: '정성을 담아 만들었습니다',
+      aboutSections: [
+        { title: '소개', body: '오목은 돌 다섯 개를 가로·세로·대각선 중 한 줄로 먼저 잇는 보드게임입니다. 흔히 Gomoku 또는 Five in a Row로도 알려져 있습니다.' },
+        { title: '제작', body: 'Hanrim', link: { url: 'https://cozyshelter.tistory.com', label: 'Cozy Shelter' } },
+        { title: '그래픽', body: '오목판 · 돌 디자인 · 이 프로젝트를 위해 제작' },
+        { title: '사운드', items: [
+          { label: '착수음', by: 'taure', url: 'https://pixabay.com/sound-effects/board-game-pieces-59039/' },
+          { label: '승리', by: 'Sarah H', url: 'https://pixabay.com/users/astralsynthesizer-50776509/' },
+          { label: '패배', by: 'Universfield', url: 'https://pixabay.com/users/universfield-28281460/' },
+        ] },
+        { title: 'AI 엔진', body: '직접 구현한 탐색 AI · Alpha-Beta Minimax · MIT', link: { url: 'https://github.com/MerciHanrim/omok', label: 'GitHub' } },
+      ],
     },
     en: {
       sub: 'OMOK · Five in a Row',
@@ -117,6 +132,21 @@
         { title: 'How to win', body: 'Line up five of your own stones in a row, horizontally, vertically, or diagonally.' },
         { title: 'Free rule', body: 'No restrictions; the first to make five wins. Six or more in a row also wins.' },
         { title: '3-3 rule (optional)', body: 'A restriction on Black only. Black may not play a move that creates two or more open threes at once. White has no restriction.' },
+      ],
+      aboutTitle: 'About',
+      aboutClose: 'Close',
+      aboutSourceLabel: 'Source ↗',
+      aboutTagline: 'Made with care',
+      aboutSections: [
+        { title: 'About', body: 'Omok is a board game in which you race to line up five stones in a row, horizontally, vertically, or diagonally. It is also known as Gomoku or Five in a Row.' },
+        { title: 'Made by', body: 'Hanrim', link: { url: 'https://cozyshelter.tistory.com', label: 'Cozy Shelter' } },
+        { title: 'Graphics', body: 'Board & stone design · created for this project' },
+        { title: 'Sound', items: [
+          { label: 'Stone placement', by: 'taure', url: 'https://pixabay.com/sound-effects/board-game-pieces-59039/' },
+          { label: 'Victory', by: 'Sarah H', url: 'https://pixabay.com/users/astralsynthesizer-50776509/' },
+          { label: 'Defeat', by: 'Universfield', url: 'https://pixabay.com/users/universfield-28281460/' },
+        ] },
+        { title: 'AI engine', body: 'Self-built search AI · Alpha-Beta Minimax · MIT', link: { url: 'https://github.com/MerciHanrim/omok', label: 'GitHub' } },
       ],
     },
     'zh-Hans': {
@@ -163,6 +193,21 @@
         { title: '自由规则', body: '没有特别禁制，先连成五子者胜。连成六子以上（长连）亦可获胜。' },
         { title: '禁手（三三，可选）', body: '仅对黑方的限制。黑方不可在一手内同时形成两个或以上的活三。白方无限制。' },
       ],
+      aboutTitle: '关于',
+      aboutClose: '关闭',
+      aboutSourceLabel: '来源 ↗',
+      aboutTagline: '用心制作',
+      aboutSections: [
+        { title: '关于', body: '五子棋是抢先将五颗棋子连成一线（横·竖·斜）的棋类游戏，也称为 Gomoku 或 Five in a Row。' },
+        { title: '制作', body: 'Hanrim', link: { url: 'https://cozyshelter.tistory.com', label: 'Cozy Shelter' } },
+        { title: '图像', body: '棋盘与棋子设计 · 为本项目制作' },
+        { title: '音效', items: [
+          { label: '落子音', by: 'taure', url: 'https://pixabay.com/sound-effects/board-game-pieces-59039/' },
+          { label: '胜利', by: 'Sarah H', url: 'https://pixabay.com/users/astralsynthesizer-50776509/' },
+          { label: '失败', by: 'Universfield', url: 'https://pixabay.com/users/universfield-28281460/' },
+        ] },
+        { title: 'AI 引擎', body: '自行实现的搜索 AI · Alpha-Beta Minimax · MIT', link: { url: 'https://github.com/MerciHanrim/omok', label: 'GitHub' } },
+      ],
     },
     'zh-Hant': {
       sub: 'OMOK · 五子棋',
@@ -207,6 +252,21 @@
         { title: '勝負條件', body: '將自己的五顆棋子在橫、豎或斜方向連成一線即獲勝。' },
         { title: '自由規則', body: '沒有特別禁制，先連成五子者勝。連成六子以上（長連）亦可獲勝。' },
         { title: '禁手（三三，可選）', body: '僅對黑方的限制。黑方不可在一手內同時形成兩個或以上的活三。白方無限制。' },
+      ],
+      aboutTitle: '關於',
+      aboutClose: '關閉',
+      aboutSourceLabel: '來源 ↗',
+      aboutTagline: '用心製作',
+      aboutSections: [
+        { title: '關於', body: '五子棋是搶先將五顆棋子連成一線（橫·豎·斜）的棋類遊戲，也稱為 Gomoku 或 Five in a Row。' },
+        { title: '製作', body: 'Hanrim', link: { url: 'https://cozyshelter.tistory.com', label: 'Cozy Shelter' } },
+        { title: '圖像', body: '棋盤與棋子設計 · 為本專案製作' },
+        { title: '音效', items: [
+          { label: '落子音', by: 'taure', url: 'https://pixabay.com/sound-effects/board-game-pieces-59039/' },
+          { label: '勝利', by: 'Sarah H', url: 'https://pixabay.com/users/astralsynthesizer-50776509/' },
+          { label: '失敗', by: 'Universfield', url: 'https://pixabay.com/users/universfield-28281460/' },
+        ] },
+        { title: 'AI 引擎', body: '自行實作的搜尋 AI · Alpha-Beta Minimax · MIT', link: { url: 'https://github.com/MerciHanrim/omok', label: 'GitHub' } },
       ],
     },
     ja: {
@@ -253,6 +313,21 @@
         { title: '自由ルール', body: '特別な禁じ手はなく、先に五つ並べれば勝ちです。六つ以上（長連）でも勝てます。' },
         { title: '三々禁止（任意）', body: '黒のみに適用される制約です。一手で活三を二つ以上同時に作る場所には打てません。白に制約はありません。' },
       ],
+      aboutTitle: 'このゲームについて',
+      aboutClose: '閉じる',
+      aboutSourceLabel: '出典 ↗',
+      aboutTagline: '心を込めて作りました',
+      aboutSections: [
+        { title: 'このゲームについて', body: '五目並べは、石を縦・横・斜めのいずれかに五つ先に並べるボードゲームです。Gomoku や Five in a Row とも呼ばれます。' },
+        { title: '制作', body: 'Hanrim', link: { url: 'https://cozyshelter.tistory.com', label: 'Cozy Shelter' } },
+        { title: 'グラフィック', body: '盤と石のデザイン · 本プロジェクトのために制作' },
+        { title: 'サウンド', items: [
+          { label: '着手音', by: 'taure', url: 'https://pixabay.com/sound-effects/board-game-pieces-59039/' },
+          { label: '勝利', by: 'Sarah H', url: 'https://pixabay.com/users/astralsynthesizer-50776509/' },
+          { label: '敗北', by: 'Universfield', url: 'https://pixabay.com/users/universfield-28281460/' },
+        ] },
+        { title: 'AIエンジン', body: '自作の探索AI · Alpha-Beta Minimax · MIT', link: { url: 'https://github.com/MerciHanrim/omok', label: 'GitHub' } },
+      ],
     },
     de: {
       sub: 'OMOK · Fünf in einer Reihe',
@@ -298,6 +373,21 @@
         { title: 'Freie Regel', body: 'Keine Beschränkungen; wer zuerst fünf bildet, gewinnt. Auch sechs oder mehr (Langreihe) gewinnen.' },
         { title: '3-3-Regel (optional)', body: 'Eine Beschränkung nur für Schwarz. Schwarz darf keinen Zug machen, der zugleich zwei oder mehr offene Dreien bildet. Weiß ist nicht beschränkt.' },
       ],
+      aboutTitle: 'Über',
+      aboutClose: 'Schließen',
+      aboutSourceLabel: 'Quelle ↗',
+      aboutTagline: 'Mit Sorgfalt erstellt',
+      aboutSections: [
+        { title: 'Über', body: 'Omok ist ein Brettspiel, bei dem man als Erster fünf Steine in eine Reihe bringt – waagrecht, senkrecht oder diagonal. Auch bekannt als Gomoku oder Five in a Row.' },
+        { title: 'Erstellt von', body: 'Hanrim', link: { url: 'https://cozyshelter.tistory.com', label: 'Cozy Shelter' } },
+        { title: 'Grafik', body: 'Brett- & Steindesign · für dieses Projekt erstellt' },
+        { title: 'Sound', items: [
+          { label: 'Steinsetzung', by: 'taure', url: 'https://pixabay.com/sound-effects/board-game-pieces-59039/' },
+          { label: 'Sieg', by: 'Sarah H', url: 'https://pixabay.com/users/astralsynthesizer-50776509/' },
+          { label: 'Niederlage', by: 'Universfield', url: 'https://pixabay.com/users/universfield-28281460/' },
+        ] },
+        { title: 'KI-Engine', body: 'Selbst entwickelte Such-KI · Alpha-Beta Minimax · MIT', link: { url: 'https://github.com/MerciHanrim/omok', label: 'GitHub' } },
+      ],
     },
     fr: {
       sub: 'OMOK · Cinq en ligne',
@@ -342,6 +432,21 @@
         { title: 'Condition de victoire', body: 'Alignez cinq de vos pierres horizontalement, verticalement ou en diagonale.' },
         { title: 'Règle libre', body: 'Aucune restriction ; le premier à aligner cinq gagne. Six ou plus (longue ligne) gagnent aussi.' },
         { title: 'Règle 3-3 (optionnelle)', body: 'Une restriction pour Noir uniquement. Noir ne peut jouer un coup créant deux trois ouverts ou plus à la fois. Blanc n’a aucune restriction.' },
+      ],
+      aboutTitle: 'À propos',
+      aboutClose: 'Fermer',
+      aboutSourceLabel: 'Source ↗',
+      aboutTagline: 'Fait avec soin',
+      aboutSections: [
+        { title: 'À propos', body: 'L’Omok est un jeu de plateau où l’on cherche à aligner cinq pierres le premier, à l’horizontale, à la verticale ou en diagonale. Aussi connu sous le nom de Gomoku ou Five in a Row.' },
+        { title: 'Réalisé par', body: 'Hanrim', link: { url: 'https://cozyshelter.tistory.com', label: 'Cozy Shelter' } },
+        { title: 'Graphismes', body: 'Plateau & pierres · créés pour ce projet' },
+        { title: 'Sons', items: [
+          { label: 'Pose de pierre', by: 'taure', url: 'https://pixabay.com/sound-effects/board-game-pieces-59039/' },
+          { label: 'Victoire', by: 'Sarah H', url: 'https://pixabay.com/users/astralsynthesizer-50776509/' },
+          { label: 'Défaite', by: 'Universfield', url: 'https://pixabay.com/users/universfield-28281460/' },
+        ] },
+        { title: 'Moteur IA', body: 'IA de recherche maison · Alpha-Beta Minimax · MIT', link: { url: 'https://github.com/MerciHanrim/omok', label: 'GitHub' } },
       ],
     },
   };
@@ -1221,6 +1326,8 @@
     document.getElementById('settingsRuleLabel').textContent = t('ruleLabel');
     document.getElementById('ruleFree').textContent = t('ruleFree');
     document.getElementById('ruleRenju').textContent = t('ruleRenju');
+    const aboutOv = document.getElementById('aboutOverlay');
+    if (aboutOv && aboutOv.style.display !== 'none') renderAbout();
   }
   for (const l of LANG_LIST) {
     document.getElementById(l.id).addEventListener('click', () => setLang(l.code, l.id));
@@ -1482,6 +1589,81 @@
   function rulesEsc(e) { if (e.key === 'Escape') closeRulesOverlay(); }
   rulesClose.onclick = closeRulesOverlay;
   rulesBackdrop.onclick = closeRulesOverlay;
+
+  // ── About / Credits 오버레이 (설정 메뉴 하단에서 열림. 장기와 동일 양식) ──
+  const ABOUT_VERSION = 'v1.0.0';
+  const aboutOverlay = document.getElementById('aboutOverlay');
+  const aboutBackdrop = document.getElementById('aboutBackdrop');
+  const aboutBody = document.getElementById('aboutBody');
+  const aboutCloseBtn = document.getElementById('aboutClose');
+  const aboutBtn = document.getElementById('aboutBtn');
+  function renderAbout() {
+    if (!aboutBody) return;
+    document.getElementById('aboutTitle').textContent = t('aboutTitle');
+    aboutCloseBtn.setAttribute('aria-label', t('aboutClose'));
+    const sections = t('aboutSections') || [];
+    aboutBody.innerHTML = '';
+    sections.forEach((sec) => {
+      const card = document.createElement('div');
+      card.className = 'rules-section about-section';
+      const title = document.createElement('h3');
+      title.className = 'rules-section-title';
+      title.textContent = sec.title;
+      card.appendChild(title);
+      if (sec.body) {
+        const body = document.createElement('p');
+        body.className = 'rules-section-body';
+        body.textContent = sec.body;
+        card.appendChild(body);
+      }
+      // 출처 여럿(사운드): { label, by, url? }
+      if (sec.items) {
+        sec.items.forEach((it) => {
+          const row = document.createElement('p');
+          row.className = 'rules-section-body about-item';
+          row.textContent = it.by ? `${it.label} · ${it.by}` : it.label;
+          if (it.url) {
+            const a = document.createElement('a');
+            a.className = 'about-link about-item-link';
+            a.href = it.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+            a.textContent = t('aboutSourceLabel') || 'Source ↗';
+            row.appendChild(document.createTextNode(' '));
+            row.appendChild(a);
+          }
+          card.appendChild(row);
+        });
+      }
+      // 링크(제작·AI엔진)
+      const links = sec.links ? sec.links : (sec.link ? [sec.link] : []);
+      links.forEach((lk) => {
+        const a = document.createElement('a');
+        a.className = 'about-link';
+        a.href = lk.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        a.textContent = lk.label;
+        card.appendChild(a);
+      });
+      aboutBody.appendChild(card);
+    });
+    const footer = document.createElement('div');
+    footer.className = 'about-footer';
+    footer.textContent = ABOUT_VERSION + ' · ' + t('aboutTagline');
+    aboutBody.appendChild(footer);
+  }
+  function openAboutOverlay() {
+    renderAbout();
+    aboutOverlay.style.display = '';
+    aboutBody.scrollTop = 0;
+    document.addEventListener('keydown', aboutEsc);
+  }
+  function closeAboutOverlay() {
+    aboutOverlay.style.display = 'none';
+    document.removeEventListener('keydown', aboutEsc);
+  }
+  function aboutEsc(e) { if (e.key === 'Escape') closeAboutOverlay(); }
+  if (aboutCloseBtn) aboutCloseBtn.onclick = closeAboutOverlay;
+  if (aboutBackdrop) aboutBackdrop.onclick = closeAboutOverlay;
+  if (aboutBtn) aboutBtn.onclick = () => { toggleSettings(false); openAboutOverlay(); };
+
 
   // ── 이벤트 ─────────────────────────────────────────────
   undoBtn.addEventListener('click', undo);

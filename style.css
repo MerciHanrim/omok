@@ -180,7 +180,7 @@ svg.grid { position: absolute; overflow: visible; z-index: 1; }
    산수화처럼 명암 큰 배경에서도 읽히도록 글자 뒤에 옅은 외곽선. */
 .grid .axis-label {
   fill: rgba(50,38,22,0.78);
-  font-family: 'Gowun Batang', serif;
+  font-family: 'Gowun Batang', var(--cjk-font), serif;
   font-size: 3px;
   letter-spacing: 0;
   user-select: none;
@@ -342,7 +342,7 @@ svg.grid { position: absolute; overflow: visible; z-index: 1; }
 .controls { display: flex; gap: 8px; }
 .controls button {
   flex: 1;
-  font-family: 'Gowun Batang', serif;
+  font-family: 'Gowun Batang', var(--cjk-font), serif;
   font-size: 0.9rem;
   padding: 11px 8px;
   background: rgba(43,39,36,0.05);
@@ -390,7 +390,7 @@ svg.grid { position: absolute; overflow: visible; z-index: 1; }
 }
 .lang-btn {
   display: block; width: 100%;
-  font-family: 'Gowun Batang', serif;
+  font-family: 'Gowun Batang', var(--cjk-font), serif;
   font-size: 0.84rem;
   padding: 8px 16px;
   background: transparent; border: none;
@@ -496,7 +496,7 @@ svg.grid { position: absolute; overflow: visible; z-index: 1; }
 .level-play { text-align: center; margin-bottom: 18px; }
 .level-play-label {
   display: inline-block;
-  font-family: 'Gowun Batang', serif;
+  font-family: 'Gowun Batang', var(--cjk-font), serif;
   font-size: 0.92rem; letter-spacing: 0.06em;
   color: var(--ink-soft);
   padding: 6px 18px;
@@ -681,6 +681,51 @@ svg.grid { position: absolute; overflow: visible; z-index: 1; }
 }
 .rules-section-title { margin: 0 0 6px; font-size: 1.02rem; font-weight: 700; color: var(--ink); }
 .rules-section-body { margin: 0; font-size: 0.93rem; line-height: 1.62; color: var(--ink-read); }
+
+/* ── About / Credits (설정 메뉴 하단 + 오버레이) — 장기 양식 계승 ── */
+.settings-about-link {
+  display: block; width: 100%;
+  font-family: 'Gowun Batang', var(--cjk-font), serif;
+  font-size: 0.84rem;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+.settings-about-link:hover {
+  background: rgba(176,141,87,0.15);
+  color: var(--ink);
+}
+/* About 오버레이 — 규칙 오버레이(.rules-*) 스타일 재사용, 번호 없는 섹션만 보정 */
+.about-section { padding-left: 0; }
+.about-section .rules-section-body { white-space: pre-line; }
+.about-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.84rem;
+  color: var(--blue);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(31,78,95,0.4);
+  transition: color 0.12s, border-color 0.12s;
+}
+.about-link:hover {
+  color: var(--blue-deep);
+  border-bottom-color: var(--blue-deep);
+}
+.about-link + .about-link { margin-left: 16px; }
+.about-item { margin: 4px 0 0; font-size: 0.88rem; }
+.about-item-link { margin-top: 0; font-size: 0.78rem; }
+.about-item + .about-item { margin-top: 6px; }
+.about-footer {
+  margin-top: 18px; padding-top: 12px;
+  border-top: 1px solid rgba(60,45,28,0.14);
+  text-align: center; font-size: 0.8rem; color: rgba(74,64,54,0.7);
+  letter-spacing: 0.02em;
+}
 @media (max-width: 480px) {
   .rules-overlay { padding: 12px; }
   .rules-panel { max-height: 88vh; }
@@ -688,5 +733,6 @@ svg.grid { position: absolute; overflow: visible; z-index: 1; }
   .rules-title { font-size: 1.12rem; }
   .rules-body { padding: 6px 16px 16px; }
   .rules-section { padding-left: 30px; }
+  .about-section { padding-left: 0; }
   .side-grid { grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
 }
