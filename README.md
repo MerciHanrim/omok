@@ -11,7 +11,7 @@ porcelain-stone world.
 
 **[▶ Play Online](https://omok-tea.pages.dev)**
 
-<!-- TODO: 스크린샷 추가 → ![Omok — Sansuhwa board](assets/screenshots/omok-screenshot.jpg) -->
+![Omok — Sansuhwa board](assets/screenshots/omok-screenshot.jpg)
 
 ---
 
