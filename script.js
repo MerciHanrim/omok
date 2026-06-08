@@ -493,10 +493,29 @@
     lose: new Audio('assets/sound/omok_sfx_lose.mp3'),
   };
   for (const a of Object.values(SFX)) a.preload = 'auto';
+
+  // PC는 출력이 작게 들려 1.3배 증폭. 모바일은 그대로(증폭 없음).
+  // audio.volume은 최대 1.0이라, 1.0 초과 증폭은 Web Audio GainNode로 처리.
+  const _isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  let _audioCtx = null;
+  if (!_isMobile && window.AudioContext) {
+    try {
+      _audioCtx = new AudioContext();
+      for (const a of Object.values(SFX)) {
+        a.crossOrigin = 'anonymous';
+        const src = _audioCtx.createMediaElementSource(a);
+        const gain = _audioCtx.createGain();
+        gain.gain.value = 1.3;          // PC 1.3배
+        src.connect(gain).connect(_audioCtx.destination);
+      }
+    } catch (_) { _audioCtx = null; }
+  }
+
   // 재생 헬퍼 — 되감아 연타 대응. 파일 없음/자동재생 차단은 조용히 무시.
   function playSfx(name) {
     const a = SFX[name];
     if (!a) return;
+    if (_audioCtx && _audioCtx.state === 'suspended') _audioCtx.resume();
     try { a.currentTime = 0; a.play().catch(() => {}); } catch (_) {}
   }
 
