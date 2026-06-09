@@ -29,7 +29,7 @@
   // 보드·기보 좌표는 라틴/숫자라 언어 무관. UI 텍스트만 번역.
   const I18N = {
     ko: {
-      sub: 'OMOK · 오목',
+      sub: 'Gomoku · 오목',
       langLabel: '언어', bgLabel: '바둑판 배경',
       themeSansu: '산수화', themeWood: '원목', themeSipjang: '십장생', themePaper: '한지',
       black: '흑', white: '백', turnSuffix: '차례',
@@ -90,7 +90,7 @@
       ],
     },
     en: {
-      sub: 'OMOK · Five in a Row',
+      sub: 'Gomoku · Five in a Row',
       langLabel: 'Language', bgLabel: 'Board',
       themeSansu: 'Landscape', themeWood: 'Wood', themeSipjang: 'Sipjangsaeng', themePaper: 'Hanji',
       black: 'Black', white: 'White', turnSuffix: 'to move',
@@ -150,7 +150,7 @@
       ],
     },
     'zh-Hans': {
-      sub: 'OMOK · 五子棋',
+      sub: 'Gomoku · 五子棋',
       langLabel: '语言', bgLabel: '棋盘',
       themeSansu: '山水画', themeWood: '原木', themeSipjang: '十长生', themePaper: '韩纸',
       black: '黑', white: '白', turnSuffix: '行棋',
@@ -210,7 +210,7 @@
       ],
     },
     'zh-Hant': {
-      sub: 'OMOK · 五子棋',
+      sub: 'Gomoku · 五子棋',
       langLabel: '語言', bgLabel: '棋盤',
       themeSansu: '山水畫', themeWood: '原木', themeSipjang: '十長生', themePaper: '韓紙',
       black: '黑', white: '白', turnSuffix: '行棋',
@@ -270,7 +270,7 @@
       ],
     },
     ja: {
-      sub: 'OMOK · 五目並べ',
+      sub: 'Gomoku · 五目並べ',
       langLabel: '言語', bgLabel: '盤',
       themeSansu: '山水画', themeWood: '木目', themeSipjang: '十長生', themePaper: '韓紙',
       black: '黒', white: '白', turnSuffix: 'の番',
@@ -330,7 +330,7 @@
       ],
     },
     de: {
-      sub: 'OMOK · Fünf in einer Reihe',
+      sub: 'Gomoku · Fünf in einer Reihe',
       langLabel: 'Sprache', bgLabel: 'Brett',
       themeSansu: 'Landschaft', themeWood: 'Holz', themeSipjang: 'Sipjangsaeng', themePaper: 'Hanji',
       black: 'Schwarz', white: 'Weiß', turnSuffix: 'am Zug',
@@ -390,7 +390,7 @@
       ],
     },
     fr: {
-      sub: 'OMOK · Cinq en ligne',
+      sub: 'Gomoku · Cinq en ligne',
       langLabel: 'Langue', bgLabel: 'Plateau',
       themeSansu: 'Paysage', themeWood: 'Bois', themeSipjang: 'Sipjangsaeng', themePaper: 'Hanji',
       black: 'Noir', white: 'Blanc', turnSuffix: 'au trait',
