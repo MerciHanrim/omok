@@ -1,4 +1,4 @@
-# Omok · 오목 (Korean Five-in-a-Row)
+# Gomoku · 오목 (Korean Five-in-a-Row)
 
 Traditional Korean Omok in your browser — a built-in AI with four difficulty
 tiers, a renju (3-3) rule toggle, a movetext log with board coordinates,
